@@ -1,5 +1,14 @@
 #!/usr/bin/env node
 
+/*
+    Inspired by:
+    - https://github.com/actions-on-google/dialogflow-conversation-components-nodejs/issues/8
+    - https://developers.google.com/actions/reference/nodejs/lib-v1-migration
+    - https://github.com/dialogflower/df2.git
+
+ */
+
+
 'use strict';
 const https = require ('https');
 const dotenv = require('dotenv');
@@ -10,7 +19,7 @@ const bodyParser = require('body-parser');
 const {dialogflow} = require('actions-on-google');
 
 const server = express();
-const assistant = dialogflow();
+const assistant = dialogflow({debug: true});
 const router = express.Router();
 
 const emptyPage = 'static/nothing.html';
