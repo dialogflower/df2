@@ -1,0 +1,32 @@
+{
+  "name": "dialogflower",
+  "version": "1.0.0",
+  "description": "Middleware to serve fulfillment for Google Dialogflow.",
+  "main": "server.js",
+  "scripts": {
+    "test": "test.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "https": "^1.0.0",
+    "express": "^4.17.1",
+    "body-parser": "^1.19.0",
+    "dialogflow": "^0.10.1",
+    "actions-on-google": "^2.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dialogflower/df2.git"
+  },
+  "keywords": [
+    "dialogflow",
+    "JavaScript"
+  ],
+  "author": "dialogflower",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dialogflower/df2/issues"
+  },
+  "homepage": "https://github.com/dialogflower/df2#readme"
+}
