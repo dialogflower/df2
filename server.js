@@ -19,6 +19,11 @@ server.set('port', process.env.PORT || 1488);
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json({type: 'application/json'}));
 
+// TODO: implement https://stackoverflow.com/questions/43356705/
+// const handleErrorAsync = func => (req, res, next) => {
+//    func(req, res, next).catch((error) => next(error));
+// };
+
 assistant.intent('helloWorld', conv => {
     let name = conv.parameters.name;
     console.log('Hello, welcome ' + name);
@@ -27,7 +32,7 @@ assistant.intent('helloWorld', conv => {
 
 router.use(function (req, res, next) {
     //todo: req.query.key
-    console.log('http://' + req.headers.host + req.url, ' - ', req.headers['user-agent'], ' - ', req.query.key);
+    console.log('http://' + req.headers.host + req.url, ' - ', req.headers['user-agent'], ' - ', req.method);
     next();
 });
 
