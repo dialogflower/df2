@@ -38,6 +38,22 @@ assistant.intent('helloWorld', conv => {
     console.log('Hello, welcome ' + name);
     conv.ask('Hello, welcome ' + name);
 });
+assistant.intent('жопа', conv => {
+    console.log('Это интент про жопу');
+    conv.ask('Это интент про жопу');
+});
+assistant.intent('имя', conv => {
+    console.log('Это интент про имя');
+    conv.ask('Это интент про имя');
+});
+assistant.intent('пизда', conv => {
+    console.log('Это интент про пизду, не бранись!');
+    conv.ask('Это интент про пизду, не бранись!');
+});
+assistant.intent('хуй', conv => {
+    console.log('Это секретный интент про хуй, не бранись!');
+    conv.ask('Это секретный интент про хуй, не бранись!');
+});
 
 router.use(function (req, res, next) {
     //todo: req.query.key
