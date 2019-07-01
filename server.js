@@ -130,7 +130,7 @@ function webhook(request, response) {
 
 function githook(request, response) {
     function deploy(response){
-        childProcess.exec('cd /home && ./deploy.sh', function(err, stdout, stderr){
+        childProcess.exec('/home/user/deploy.sh', function(err, stdout, stderr){
             if (err) {
                 console.error(err);
                 return response.send(500);
