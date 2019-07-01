@@ -139,6 +139,9 @@ function webhook(request, response) {
 }
 
 function githook(request, response) {
+    if (process.env.LOG_LEVEL > 2) {
+        console.log('GitHub request headers:\n' + JSON.stringify(req.headers) + '\n');
+    }
     function deploy(response){
         childProcess.exec('/home/user/deploy.sh', function(err, stdout, stderr){
             if (err) {
@@ -155,8 +158,8 @@ function githook(request, response) {
 
     if(branch.indexOf('master') > -1 && sender.login === githubUsername){
         deploy(response);
+        console.log('Deploy initiated!\n')
     }
-    console.log('\n')
 }
 
 server.use('/', logging);
