@@ -129,10 +129,23 @@ function webhook(request, response) {
 }
 
 function githook(request, response) {
-    // TODO: add GitHub autodeploy
-    // https://itnext.io/automate-deployment-with-webhooks-18735f1c7f84
-    console.log('GitHub Request headers: ' + JSON.stringify(request.headers));
-    console.log('GitHub Request body: ' + JSON.stringify(response.body));
+    function deploy(response){
+        childProcess.exec('cd /home && ./deploy.sh', function(err, stdout, stderr){
+            if (err) {
+                console.error(err);
+                return response.send(500);
+            }
+            response.send(200);
+        });
+    }
+
+    const githubUsername = process.env.githubUsername;
+    const sender = request.body.sender;
+    const branch = request.body.ref;
+
+    if(branch.indexOf('master') > -1 && sender.login === githubUsername){
+        deploy(response);
+    }
     console.log('\n')
 }
 
