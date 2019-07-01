@@ -13,12 +13,11 @@
 
 
 'use strict';
-const https = require('https');
 const dotenv = require('dotenv');
 dotenv.config({path: `${__dirname}/.env`});
 const express = require('express');
 const bodyParser = require('body-parser');
-const {WebhookClient, Card, Image, Payload, Text, Suggestion} = require('dialogflow-fulfillment');
+const {WebhookClient, Card, Payload, Text, Suggestion} = require('dialogflow-fulfillment');
 const server = express();
 const emptyPage = 'static/nothing.html';
 
@@ -83,6 +82,14 @@ function webhook(request, response) {
         console.log(imei, model)
     }
 
+    function timaticHandler(agent) {
+        let conv = agent.conv();
+        conv.ask('Hello from the Actions on Google client library!');
+        console.log('Hello from the Actions on Google client library!');
+        agent.end(conv);
+    }
+
+
     function myHandler(agent) {
         agent.add(`This message is from Dialogflow's Cloud Functions!`);
         agent.add(new Suggestion(`Quick Reply`));
@@ -117,7 +124,7 @@ function webhook(request, response) {
     intentMap.set('имя', ruName);
     intentMap.set('жопа', imeiHandler);
     intentMap.set('пизда', enName);
-    intentMap.set('хуй', googleAssistantHandler);
+    intentMap.set('хуй', timaticHandler);
     agent.handleRequest(intentMap);
 }
 
