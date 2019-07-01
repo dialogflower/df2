@@ -83,10 +83,9 @@ function webhook(request, response) {
     }
 
     function timaticHandler(agent) {
-        const conv = agent.conv();
-        const dummyAnswer = 'Hello from the Actions on Google client library!'
-        conv.ask(dummyAnswer);
-        console.log(dummyAnswer);
+        let conv = agent.conv();
+        conv.ask('Hello from the Actions on Google client library!');
+        console.log('Hello from the Actions on Google client library!');
         agent.end(conv);
     }
 
@@ -112,10 +111,10 @@ function webhook(request, response) {
     }
 
     function googleAssistantHandler(agent) {
-        const conv = agent.conv();
-        const dummyAnswer = 'Hello from the Actions on Google client library!'
-        conv.ask(dummyAnswer);
-        console.log(dummyAnswer);
+        let conv = agent.conv();
+        conv.ask('Hello from the Actions on Google client library!');
+        console.log('Hello from the Actions on Google client library!');
+        agent.end(conv);
     }
 
     let intentMap = new Map();
@@ -126,7 +125,6 @@ function webhook(request, response) {
     intentMap.set('imei', imeiHandler);
     intentMap.set('name', enName);
     intentMap.set('visa', timaticHandler);
-    intentMap.set('google', googleAssistantHandler());
     agent.handleRequest(intentMap);
 }
 
