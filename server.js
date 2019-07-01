@@ -54,6 +54,33 @@ function webhook(request, response) {
     function fallback(agent) {
         agent.add(`Переформулируйте, пожалуйста`);
         agent.add(`А можете по-другому?`);
+        agent.add(`Вот эта последняя фраза мне не ясна.`);
+    }
+
+    function ruName(agent) {
+        const RuNamer = require('./utils/ru_namer');
+        const russianName = RuNamer.getNew();
+        agent.add(new Text({"text": {"text": [russianName]}}));
+        console.log(russianName)
+    }
+
+    function enName(agent) {
+        const EnNamer = require('./utils/en_namer');
+        const englishName = EnNamer.getNew();
+        agent.add(new Text({"text": {"text": [englishName]}}));
+        console.log(englishName)
+    }
+
+    function imeiHandler(agent) {
+        const IMEI = require('./utils/imei');
+        const hardwareID = IMEI.getNew();
+        const imei = hardwareID[0];
+        const model = hardwareID[2];
+        const link = 'https://imei.info/' + imei;
+        agent.add(new Text({"text": {"text": [imei]}}));
+        agent.add(new Text({"text": {"text": [model]}}));
+        agent.add(new Text({"text": {"text": [link]}}));
+        console.log(imei, model)
     }
 
     function myHandler(agent) {
@@ -69,6 +96,9 @@ function webhook(request, response) {
             })
         );
         agent.add(new Text({"text": {"text": ["Это интент для телеграма"]}, "platform": "TELEGRAM"}));
+        agent.add(new Text({"text": {"text": ["Это интент для всех"]}}));
+        const tgPayload = require('./static/tgPayloadGetPhoneNumber.json');
+        agent.add(new Payload(agent.TELEGRAM, tgPayload, {sendAsMessage: true}));
         agent.context.set({name: 'weather', lifespan: 2, parameters: {city: 'Rome'}});
         console.log(`This message is from Dialogflow's Cloud Functions!`);
     }
@@ -84,9 +114,9 @@ function webhook(request, response) {
     intentMap.set('Default Welcome Intent', welcome);
     intentMap.set('Default Fallback Intent', fallback);
     intentMap.set('helloWorld', myHandler);
-    intentMap.set('жопа', myHandler);
-    intentMap.set('имя', myHandler);
-    intentMap.set('пизда', myHandler);
+    intentMap.set('имя', ruName);
+    intentMap.set('жопа', imeiHandler);
+    intentMap.set('пизда', enName);
     intentMap.set('хуй', googleAssistantHandler);
     agent.handleRequest(intentMap);
 }

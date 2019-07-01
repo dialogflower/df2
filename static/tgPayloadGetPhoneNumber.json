@@ -1,0 +1,22 @@
+{
+  "text": "Please click on button below to share your number",
+  "reply_markup": {
+    "one_time_keyboard": true,
+    "resize_keyboard": true,
+    "keyboard": [
+      [
+        {
+          "text": "Share my phone number",
+          "callback_data": "phone",
+          "request_contact": true
+        }
+      ],
+      [
+        {
+          "text": "Cancel",
+          "callback_data": "Cancel"
+        }
+      ]
+    ]
+  }
+}
