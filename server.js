@@ -49,10 +49,6 @@ function webhook(request, response) {
         agent.add(`Do you speak English?`);
     }
 
-    function produceFulfillmentMessages(line) {
-        return '{"fulfillmentMessages":[{"text":{"text":[ ' + line + ']}}]}'
-    }
-
     function fallback(agent) {
         agent.add(`Переформулируйте, пожалуйста`);
         agent.add(`А можете по-другому?`);
@@ -62,7 +58,6 @@ function webhook(request, response) {
     function ruName(agent) {
         const RuNamer = require('./utils/ru_namer');
         const russianName = RuNamer.getNew();
-        const json = produceFulfillmentMessages(russianName);
         agent.add(new Text(russianName));
         console.log(russianName)
     }
@@ -70,9 +65,15 @@ function webhook(request, response) {
     function enName(agent) {
         const EnNamer = require('./utils/en_namer');
         const englishName = EnNamer.getNew();
-        const json = produceFulfillmentMessages(englishName);
         agent.add(new Text(englishName));
         console.log(englishName)
+    }
+
+    function deName(agent) {
+        const DeNamer = require('./utils/de_namer');
+        const germanName = EnNamer.getNew();
+        agent.add(new Text(germanName));
+        console.log(germanName)
     }
 
     function imeiHandler(agent) {
@@ -81,7 +82,6 @@ function webhook(request, response) {
         const imei = hardwareID[0];
         const model = hardwareID[1];
         const link = 'https://imei.info/' + imei;
-        const json = produceFulfillmentMessages(imei + '\n' + model + '\n' + link);
         agent.add(new Text(imei + '\n' + model + '\n' + link));
         console.log(imei, model)
     }
@@ -125,9 +125,10 @@ function webhook(request, response) {
     intentMap.set('Default Welcome Intent', welcome);
     intentMap.set('Default Fallback Intent', fallback);
     intentMap.set('helloWorld', myHandler);
-    intentMap.set('russian name', ruName);
+    intentMap.set('English name', enName);
+    intentMap.set('Russian name', ruName);
+    intentMap.set('German name', deName);
     intentMap.set('imei', imeiHandler);
-    intentMap.set('name', enName);
     intentMap.set('visa', timaticHandler);
     intentMap.set('google', googleAssistantHandler);
     agent.handleRequest(intentMap);
