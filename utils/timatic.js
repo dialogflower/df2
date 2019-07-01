@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const countries = require('iso-country-codes').byAlpha2;
 const rp = require('request-promise');
 const $ = require('cheerio');
 const endpoint = 'https://www.timaticweb.com/cgi-bin/tim_website_client.cgi';
@@ -9,7 +10,6 @@ let residence = '';
 let desitination = 'DE=';
 const postfix = 'user=GF&subuser=GFB2C';
 
-const countries = require('iso-country-codes').byAlpha2;
 const keys = Object.keys(countries);
 
 function pickRandomCountry() {

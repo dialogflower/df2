@@ -6,9 +6,10 @@
     - https://dialogflow.com/docs/reference/v1-v2-migration-guide-fulfillment
     - https://developers.google.com/actions/reference/nodejs/lib-v1-migration
     - https://developers.google.com/actions/assistant/responses#nodejs
+    - https://habr.com/ru/company/redmadrobot/blog/420111/
     - https://stackoverflow.com/questions/48583023/ - Reference Error: request is not defined
     - https://github.com/dialogflower/df2.git
-
+CAADBAADXAADUYzPAYxyzyEYDeBVAg
  */
 
 
@@ -17,7 +18,7 @@ const dotenv = require('dotenv');
 dotenv.config({path: `${__dirname}/.env`});
 const express = require('express');
 const bodyParser = require('body-parser');
-var childProcess = require('child_process');
+const childProcess = require('child_process');
 const {WebhookClient, Card, Payload, Text, Suggestion} = require('dialogflow-fulfillment');
 const server = express();
 const emptyPage = 'static/nothing.html';
@@ -148,6 +149,9 @@ function githook(request, response) {
             if (err) {
                 console.error(err);
                 return response.send(500);
+            }
+            else {
+                console.log(stdout)
             }
         });
         response.send(200);
