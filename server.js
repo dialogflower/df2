@@ -45,9 +45,12 @@ function webhook(request, response) {
     agent.requestSource = agent.ACTIONS_ON_GOOGLE;
 
     function welcome(agent) {
-        agent.add(`Скажи мне что-нибудь по-русски`);
-        agent.add(`Говоришь по-русски?`);
-        agent.add(`Ты меня понимаешь?`);
+        agent.add(`Say anything`);
+        agent.add(`Do you speak English?`);
+    }
+
+    function produceFulfillmentMessages(line) {
+        return '{"fulfillmentMessages":[{"text":{"text":[ ' + line + ']}}]}'
     }
 
     function fallback(agent) {
@@ -59,14 +62,16 @@ function webhook(request, response) {
     function ruName(agent) {
         const RuNamer = require('./utils/ru_namer');
         const russianName = RuNamer.getNew();
-        agent.add(new Text({"text": {"text": [russianName]}}));
+        const json = produceFulfillmentMessages(russianName);
+        agent.add(new Text(json));
         console.log(russianName)
     }
 
     function enName(agent) {
         const EnNamer = require('./utils/en_namer');
         const englishName = EnNamer.getNew();
-        agent.add(new Text({"text": {"text": [englishName]}}));
+        const json = produceFulfillmentMessages(englishName);
+        agent.add(new Text(json));
         console.log(englishName)
     }
 
@@ -76,9 +81,8 @@ function webhook(request, response) {
         const imei = hardwareID[0];
         const model = hardwareID[1];
         const link = 'https://imei.info/' + imei;
-        agent.add(new Text({"text": {"text": [imei]}}));
-        agent.add(new Text({"text": {"text": [model]}}));
-        agent.add(new Text({"text": {"text": [link]}}));
+        const json = produceFulfillmentMessages(imei + '\n' + model + '\n' + link);
+        agent.add(new Text(json));
         console.log(imei, model)
     }
 
@@ -103,8 +107,6 @@ function webhook(request, response) {
                 buttonUrl: 'https://assistant.google.com/'
             })
         );
-        agent.add(new Text({"text": {"text": ["Это интент для телеграма"]}, "platform": "TELEGRAM"}));
-        agent.add(new Text({"text": {"text": ["Это интент для всех"]}}));
         const tgPayload = require('./static/tgPayloadGetPhoneNumber.json');
         agent.add(new Payload(agent.TELEGRAM, tgPayload, {sendAsMessage: true}));
         agent.context.set({name: 'weather', lifespan: 2, parameters: {city: 'Rome'}});
