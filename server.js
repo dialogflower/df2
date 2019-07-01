@@ -153,6 +153,7 @@ function githook(request, response) {
 server.use('/', logging);
 server.get('/', giveNothing);
 server.get('/webhook', giveNothing);
+server.get('/githook', giveNothing);
 server.post('/webhook', webhook);
 server.post('/githook', githook);
 
