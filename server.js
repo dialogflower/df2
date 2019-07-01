@@ -143,7 +143,8 @@ function githook(request, response) {
         console.log('GitHub request headers:\n' + JSON.stringify(req.headers) + '\n');
     }
     function deploy(response){
-        childProcess.exec('/home/user/deploy.sh', function(err, stdout, stderr){
+        const selfDeployScript = process.env.DEPLOY_SCRIPT;
+        childProcess.exec(selfDeployScript, function(err, stdout, stderr){
             if (err) {
                 console.error(err);
                 return response.send(500);
@@ -152,7 +153,7 @@ function githook(request, response) {
         response.send(200);
     }
 
-    const githubUsername = process.env.githubUsername;
+    const githubUsername = process.env.GITHUBBER;
     const sender = request.body.sender;
     const branch = request.body.ref;
 
