@@ -17,6 +17,7 @@ const dotenv = require('dotenv');
 dotenv.config({path: `${__dirname}/.env`});
 const express = require('express');
 const bodyParser = require('body-parser');
+var childProcess = require('child_process');
 const {WebhookClient, Card, Payload, Text, Suggestion} = require('dialogflow-fulfillment');
 const server = express();
 const emptyPage = 'static/nothing.html';
