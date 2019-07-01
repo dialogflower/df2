@@ -28,7 +28,7 @@ desitination += randomCountryTwo.alpha2;
 const itinerary = `Let's find visa requirements for a national of ` + randomCountryOne.name + ` travelling to ` + randomCountryTwo.name;
 const query = endpoint + '?' + prefix + '&' + passtype + '&' + nationality + '&' + residence + '&' + desitination + '&' + postfix;
 console.log(query);
-console.log(itinerary);
+console.log(itinerary + '\n');
 
 let advice;
 
