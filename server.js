@@ -63,7 +63,7 @@ function webhook(request, response) {
         const RuNamer = require('./utils/ru_namer');
         const russianName = RuNamer.getNew();
         const json = produceFulfillmentMessages(russianName);
-        agent.add(new Text(json));
+        agent.add(new Text(russianName));
         console.log(russianName)
     }
 
@@ -71,7 +71,7 @@ function webhook(request, response) {
         const EnNamer = require('./utils/en_namer');
         const englishName = EnNamer.getNew();
         const json = produceFulfillmentMessages(englishName);
-        agent.add(new Text(json));
+        agent.add(new Text(englishName));
         console.log(englishName)
     }
 
@@ -82,7 +82,7 @@ function webhook(request, response) {
         const model = hardwareID[1];
         const link = 'https://imei.info/' + imei;
         const json = produceFulfillmentMessages(imei + '\n' + model + '\n' + link);
-        agent.add(new Text(json));
+        agent.add(new Text(imei + '\n' + model + '\n' + link));
         console.log(imei, model)
     }
 
