@@ -75,7 +75,7 @@ function webhook(request, response) {
         const IMEI = require('./utils/imei');
         const hardwareID = IMEI.getNew();
         const imei = hardwareID[0];
-        const model = hardwareID[2];
+        const model = hardwareID[1];
         const link = 'https://imei.info/' + imei;
         agent.add(new Text({"text": {"text": [imei]}}));
         agent.add(new Text({"text": {"text": [model]}}));

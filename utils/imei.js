@@ -22,7 +22,7 @@ module.exports.getNew = function () {
     if (model && model.includes(vendor)) {
         vendor = '';
     }
-    model = vendor + model;
+    model = vendor + ' ' + model;
     model = model.trim();
     const snr = getSNR();
     const tac_fac_snr = tac + snr;
