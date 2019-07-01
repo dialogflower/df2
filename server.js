@@ -168,6 +168,7 @@ function githook(request, response) {
 }
 
 server.use('/', logging);
+app.use('/static', express.static(__dirname + '/static'));
 server.get('/', giveNothing);
 server.get('/webhook', giveNothing);
 server.get('/githook', giveNothing);
