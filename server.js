@@ -45,6 +45,15 @@ function webhook(request, response) {
     const agent = new WebhookClient({request, response});
     agent.requestSource = agent.ACTIONS_ON_GOOGLE;
 
+    function welcome(agent) {
+        agent.add(`Welcome to my agent!`);
+    }
+
+    function fallback(agent) {
+        agent.add(`I didn't understand`);
+        agent.add(`I'm sorry, can you try again?`);
+    }
+
     function ruName(agent) {
         const RuNamer = require('./utils/ru_namer');
         const russianName = RuNamer.getNew();
