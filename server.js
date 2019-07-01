@@ -69,8 +69,8 @@ function webhook(request, response) {
     }
 
     function britishName(agent) {
-        const BritishName = require('./utils/gb_namer');
-        const britishName = BritishName.getNew();
+        const BritishNamer = require('./utils/gb_namer');
+        const britishName = BritishNamer.getNew();
         agent.add(new Text(britishName));
         console.log(britishName)
     }
