@@ -62,18 +62,32 @@ function webhook(request, response) {
         console.log(russianName)
     }
 
-    function enName(agent) {
-        const EnNamer = require('./utils/en_namer');
-        const englishName = EnNamer.getNew();
-        agent.add(new Text(englishName));
-        console.log(englishName)
+    function americanName(agent) {
+        const AmericanNamer = require('./utils/amer_namer');
+        const americanName = AmericanNamer.getNew();
+        agent.add(new Text(americanName));
+        console.log(americanName)
+    }
+
+    function britishName(agent) {
+        const BritishName = require('./utils/gb_namer');
+        const britishName = BritishName.getNew();
+        agent.add(new Text(britishName));
+        console.log(britishName)
     }
 
     function deName(agent) {
         const DeNamer = require('./utils/de_namer');
-        const germanName = EnNamer.getNew();
+        const germanName = DeNamer.getNew();
         agent.add(new Text(germanName));
         console.log(germanName)
+    }
+
+    function esName(agent) {
+        const EsNamer = require('./utils/es_namer');
+        const hispanicName = EsNamer.getNew();
+        agent.add(new Text(hispanicName));
+        console.log(hispanicName)
     }
 
     function imeiHandler(agent) {
@@ -93,7 +107,6 @@ function webhook(request, response) {
         console.log(dummySentence);
         agent.end(conv);
     }
-
 
     function myHandler(agent) {
         agent.add(`This message is from Dialogflow's Cloud Functions!`);
@@ -125,9 +138,11 @@ function webhook(request, response) {
     intentMap.set('Default Welcome Intent', welcome);
     intentMap.set('Default Fallback Intent', fallback);
     intentMap.set('helloWorld', myHandler);
-    intentMap.set('English name', enName);
+    intentMap.set('American name', americanName);
+    intentMap.set('British name', britishName);
     intentMap.set('Russian name', ruName);
     intentMap.set('German name', deName);
+    intentMap.set('Hispanic name', esName);
     intentMap.set('imei', imeiHandler);
     intentMap.set('visa', timaticHandler);
     intentMap.set('google', googleAssistantHandler);
