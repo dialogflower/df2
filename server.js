@@ -98,24 +98,14 @@ function webhook(request, response) {
     }
 
     function myHandler(agent) {
-        agent.add(`This message is from Dialogflow's Cloud Functions!`);
-        agent.add(new Suggestion(`Quick Reply`));
-        agent.add(new Suggestion(`Suggestion`));
-        agent.add(new Card({
-                title: `Title: this is a card title`,
-                imageUrl: 'https://developers.google.com/actions/images/badges/XPM_BADGING_GoogleAssistant_VER.png',
-                text: `This is the body text of a card.  You can even use line\n  breaks and emoji! 💁`,
-                buttonText: 'This is a button',
-                buttonUrl: 'https://assistant.google.com/'
-            })
-        );
-        const tgPayload = require('./static/tgPayloadGetPhoneNumber.json');
-        agent.add(new Payload(agent.TELEGRAM, tgPayload, {sendAsMessage: true}));
-        agent.context.set({name: 'weather', lifespan: 2, parameters: {city: 'Rome'}});
-        console.log(`This message is from Dialogflow's Cloud Functions!`);
+        // todo: remove this dummy subroutine
+        const dummySentence = `This message is from Dialogflow's Cloud Functions!`;
+        agent.add(new Text(dummySentence));
+        console.log(dummySentence);
     }
 
     function googleAssistantHandler(agent) {
+        // todo: remove this dummy subroutine
         let conv = agent.conv();
         const dummySentence ='Hello from the Actions on Google client library!';
         conv.ask(dummySentence);
@@ -138,10 +128,19 @@ function webhook(request, response) {
     agent.handleRequest(intentMap);
 }
 
+function githook(request, response) {
+    // TODO: add GitHub autodeploy
+    // https://itnext.io/automate-deployment-with-webhooks-18735f1c7f84
+    console.log('GitHub Request headers: ' + JSON.stringify(request.headers));
+    console.log('GitHub Request body: ' + JSON.stringify(response.body));
+    console.log('\n')
+}
+
 server.use('/', logging);
 server.get('/', giveNothing);
 server.get('/webhook', giveNothing);
 server.post('/webhook', webhook);
+server.post('/githook', githook);
 
 server.listen(server.get('port'), function () {
     console.log('Express server started on port', server.get('port'));
