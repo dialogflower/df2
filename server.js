@@ -121,10 +121,10 @@ function webhook(request, response) {
     intentMap.set('Default Welcome Intent', welcome);
     intentMap.set('Default Fallback Intent', fallback);
     intentMap.set('helloWorld', myHandler);
-    intentMap.set('имя', ruName);
-    intentMap.set('жопа', imeiHandler);
-    intentMap.set('пизда', enName);
-    intentMap.set('хуй', timaticHandler);
+    intentMap.set('russian name', ruName);
+    intentMap.set('imei', imeiHandler);
+    intentMap.set('name', enName);
+    intentMap.set('visa', timaticHandler);
     agent.handleRequest(intentMap);
 }
 
