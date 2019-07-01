@@ -148,8 +148,8 @@ function githook(request, response) {
                 console.error(err);
                 return response.send(500);
             }
-            response.send(200);
         });
+        response.send(200);
     }
 
     const githubUsername = process.env.githubUsername;
