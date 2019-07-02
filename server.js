@@ -129,10 +129,15 @@ function webhook(request, response) {
     intentMap.set('Default Fallback Intent', fallback);
     intentMap.set('helloWorld', myHandler);
     intentMap.set('American name', americanName);
+    intentMap.set('American name repeat', americanName);
     intentMap.set('British name', britishName);
+    intentMap.set('British name repeat', britishName);
     intentMap.set('Russian name', ruName);
+    intentMap.set('Russian name repeat', ruName);
     intentMap.set('German name', deName);
+    intentMap.set('German name repeat', deName);
     intentMap.set('Hispanic name', esName);
+    intentMap.set('Hispanic name repeat', esName);
     intentMap.set('imei', imeiHandler);
     intentMap.set('visa', timaticHandler);
     intentMap.set('google', googleAssistantHandler);
