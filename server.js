@@ -123,7 +123,6 @@ function webhook(request, response) {
         // }
         const nationality = context.parameters['nationality'];
         const destination = context.parameters['destination'];
-        const nationalityFull = nationality.name;
         const destinationFull = destination.name;
         const nationalityISO = nationality['alpha-2'];
         const destinationISO = destination['alpha-2'];
@@ -132,7 +131,6 @@ function webhook(request, response) {
         const gotDestination = destinationISO.length > 0;
 
         if(gotNationality && gotDestination) {
-            console.log(itinerary);
             nationalParam += nationalityISO;
             destParam += destinationISO;
             const query = endpoint + '?' + prefix + '&' + passtype + '&' + nationalParam + '&' + residenceParam + '&' +
