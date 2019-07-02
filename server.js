@@ -156,7 +156,7 @@ function webhook(request, response) {
                         agent.add(new Text(visa + ' for you to visit ' + destinationFull));
                     }
                     else {
-                        agent.add(new Text('That seems far too complicated, read more yourself on the website ' + query));
+                        agent.add(new Text(result));
                     }
                     return Promise.resolve( agent );
                     })
