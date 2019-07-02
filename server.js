@@ -107,14 +107,23 @@ function webhook(request, response) {
         const contexts = agent.context.contexts;
         const firstContextName = Object.keys(contexts)[0];
         const context = contexts[firstContextName];
+        // Expected input for nationality or destination:
+        // {
+        //   name: 'Burkina Faso', 'alpha-2': 'BF', 'alpha-3': 'BFA', numeric: 854
+        // }
         const nationality = context.parameters['nationality'];
         const destination = context.parameters['destination'];
-        const gotNationality = nationality.length > 0;
-        const gotDestination = destination.length > 0;
+        const nationalityFull = nationality.name;
+        const destinationFull = destination.name;
+        const nationalityISO = nationality['alpha-2'];
+        const destinationISO = destination['alpha-2'];
+
+        const gotNationality = nationalityISO.length > 0;
+        const gotDestination = destinationISO.length > 0;
 
         if(gotNationality && gotDestination) {
-            const itinerary = `Let's find visa requirements for a citizen of ` + nationality + ` travelling to ` +
-                destination + `...`;
+            const itinerary = `Let's find visa requirements for a citizen of ` + nationalityFull + ` travelling to ` +
+                destinationFull + `...`;
             agent.add(new Text(itinerary));
             console.log(itinerary);
         } else if (gotNationality && !gotDestination) {
