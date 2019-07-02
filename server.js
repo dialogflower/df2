@@ -132,9 +132,6 @@ function webhook(request, response) {
         const gotDestination = destinationISO.length > 0;
 
         if(gotNationality && gotDestination) {
-            const itinerary = `Let's find visa requirements for a citizen of ` + nationalityFull + ` travelling to ` +
-                destinationFull + `...`;
-            agent.add(new Text(itinerary));
             console.log(itinerary);
             nationalParam += nationalityISO;
             destParam += destinationISO;
@@ -150,14 +147,15 @@ function webhook(request, response) {
                     result = result.split(stripAfter)[0];
                     result = '<pre>' + result.toString() + '</pre>';
                     result = $(result).text();
-                    const antivisa = 'VISA NOT REQUIRED.';
-                    const visa = 'VISA REQUIRED.';
+                    const antivisa1 = 'VISA NOT REQUIRED';
+                    const antivisa2 = 'Visa required, except';
+                    const visa = 'VISA REQUIRED';
 
-                    if (result.includes(antivisa)) {
-                        agent.add(new Text(antivisa));
+                    if (result.includes(antivisa1 || antivisa2)) {
+                        agent.add(new Text(antivisa + ' for you to visit ' + destinationFull));
                         }
                     else if (result.includes(visa)) {
-                        agent.add(new Text(visa));
+                        agent.add(new Text(visa + ' for you to visit ' + destinationFull));
                     }
                     else {
                         agent.add(new Text('That seems far too complicated, read more yourself on the website ' + query));
