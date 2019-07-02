@@ -143,6 +143,7 @@ function webhook(request, response) {
                     let result = $('.normal', html).html();
                     result = result.split(stripBefore)[1];
                     result = result.split(stripAfter)[0];
+                    result = result.split('Additional Information')[0];
                     result = '<pre>' + result.toString() + '</pre>';
                     result = $(result).text();
                     const antivisa1 = 'VISA NOT REQUIRED';
