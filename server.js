@@ -150,7 +150,11 @@ function webhook(request, response) {
                     result = result.split(stripAfter)[0];
                     result = '<pre>' + result.toString() + '</pre>';
                     result = $(result).text();
-                    agent.add(new Text(result));
+                    result.split('\n').forEach( item => {
+                        if (item.trim().length > 0) {
+                            agent.add(new Text(item));
+                        }
+                    });
                     return Promise.resolve( agent );
                     })
                 .catch(function (err) {
