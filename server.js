@@ -200,6 +200,7 @@ function webhook(request, response) {
     intentMap.set('German name repeat', deName);
     intentMap.set('Hispanic name', esName);
     intentMap.set('Hispanic name repeat', esName);
+    intentMap.set('Burner phone number', imeiHandler);
     intentMap.set('imei', imeiHandler);
     intentMap.set('awaitingUserDestinationCountry', timaticHandler);
     intentMap.set('google', googleAssistantHandler);
