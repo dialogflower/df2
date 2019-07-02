@@ -103,13 +103,18 @@ function webhook(request, response) {
     }
 
     function timaticHandler(agent) {
-        const nationality = agent.parameters['nationality'];
-        const destination = agent.parameters['destination'];
+        // todo: rework this spaghetti
+        const contexts = agent.context.contexts;
+        const firstContextName = Object.keys(contexts)[0];
+        const context = contexts[firstContextName];
+        const nationality = context.parameters['nationality'];
+        const destination = context.parameters['destination'];
         const gotNationality = nationality.length > 0;
         const gotDestination = destination.length > 0;
 
         if(gotNationality && gotDestination) {
-            const itinerary = `Let's find visa requirements for a citizen of ` + nationality + ` travelling to ` + destination;
+            const itinerary = `Let's find visa requirements for a citizen of ` + nationality + ` travelling to ` +
+                destination + `...`;
             agent.add(new Text(itinerary));
             console.log(itinerary);
         } else if (gotNationality && !gotDestination) {
