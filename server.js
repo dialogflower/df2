@@ -150,11 +150,18 @@ function webhook(request, response) {
                     result = result.split(stripAfter)[0];
                     result = '<pre>' + result.toString() + '</pre>';
                     result = $(result).text();
-                    result.split('\n').forEach( item => {
-                        if (item.trim().length > 0) {
-                            agent.add(new Text(item));
+                    const antivisa = 'VISA NOT REQUIRED.';
+                    const visa = 'VISA REQUIRED.';
+
+                    if (result.includes(antivisa)) {
+                        agent.add(new Text(antivisa));
                         }
-                    });
+                    else if (result.includes(visa)) {
+                        agent.add(new Text(visa));
+                    }
+                    else {
+                        agent.add(new Text('That seems far too complicated, read more yourself on the website ' + query));
+                    }
                     return Promise.resolve( agent );
                     })
                 .catch(function (err) {
