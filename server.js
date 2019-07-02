@@ -3,13 +3,15 @@
 /*
     Inspired by:
     - https://github.com/actions-on-google/dialogflow-conversation-components-nodejs/issues/8
+    - https://miningbusinessdata.com/dialogflow-tutorial-setting-context-from-your-inline-webhook-using-contextout/
+    - https://miningbusinessdata.com/handling-unexpected-user-input-in-dialogflow/
     - https://dialogflow.com/docs/reference/v1-v2-migration-guide-fulfillment
     - https://developers.google.com/actions/reference/nodejs/lib-v1-migration
     - https://developers.google.com/actions/assistant/responses#nodejs
     - https://habr.com/ru/company/redmadrobot/blog/420111/
     - https://stackoverflow.com/questions/48583023/ - Reference Error: request is not defined
     - https://github.com/dialogflower/df2.git
-CAADBAADXAADUYzPAYxyzyEYDeBVAg
+    - CAADBAADXAADUYzPAYxyzyEYDeBVAg
  */
 
 
@@ -101,11 +103,25 @@ function webhook(request, response) {
     }
 
     function timaticHandler(agent) {
-        let conv = agent.conv();
-        const dummySentence ='Hello from the Actions on Google client library!';
-        conv.ask(dummySentence);
-        console.log(dummySentence);
-        agent.end(conv);
+        const nationality = agent.parameters['nationality'];
+        const destination = agent.parameters['destination'];
+        const gotNationality = nationality.length > 0;
+        const gotDestination = destination.length > 0;
+
+        if(gotNationality && gotDestination) {
+            const itinerary = `Let's find visa requirements for a citizen of ` + nationality + ` travelling to ` + destination;
+            agent.add(new Text(itinerary));
+            console.log(itinerary);
+        } else if (gotNationality && !gotDestination) {
+            agent.context.set({ name: 'awaitingUserDestination', lifespan: 2});
+            agent.add('Let me know which destination country you want to travel?');
+        } else if (gotDestination && !gotNationality) {
+            agent.context.set({ name: 'awaitingUserNationality', lifespan: 2});
+            agent.add('Let me know which country has issued your passport?');
+        } else {
+            agent.context.set({ name: 'awaitingUserNationality', lifespan: 2});
+            agent.add('Let me know which what is your country?');
+        }
     }
 
     function myHandler(agent) {
@@ -139,7 +155,7 @@ function webhook(request, response) {
     intentMap.set('Hispanic name', esName);
     intentMap.set('Hispanic name repeat', esName);
     intentMap.set('imei', imeiHandler);
-    intentMap.set('visa', timaticHandler);
+    intentMap.set('awaitingUserDestinationCountry', timaticHandler);
     intentMap.set('google', googleAssistantHandler);
     agent.handleRequest(intentMap);
 }
