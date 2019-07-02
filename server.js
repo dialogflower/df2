@@ -19,6 +19,8 @@
 const dotenv = require('dotenv');
 dotenv.config({path: `${__dirname}/.env`});
 const express = require('express');
+const rp = require('request-promise');
+const $ = require('cheerio');
 const bodyParser = require('body-parser');
 const childProcess = require('child_process');
 const {WebhookClient, Card, Payload, Text, Suggestion} = require('dialogflow-fulfillment');
@@ -103,7 +105,15 @@ function webhook(request, response) {
     }
 
     function timaticHandler(agent) {
-        // todo: rework this spaghetti
+        // todo: refactor this spaghetti
+        const endpoint = 'https://www.timaticweb.com/cgi-bin/tim_website_client.cgi';
+        const prefix = 'SpecData=1&VISA=';
+        const passtype = 'PASSTYPES=PASS';
+        let nationalParam = 'NA=';
+        let residenceParam = '';
+        let destParam = 'DE=';
+        const postfix = 'user=GF&subuser=GFB2C';
+
         const contexts = agent.context.contexts;
         const firstContextName = Object.keys(contexts)[0];
         const context = contexts[firstContextName];
@@ -126,6 +136,28 @@ function webhook(request, response) {
                 destinationFull + `...`;
             agent.add(new Text(itinerary));
             console.log(itinerary);
+            nationalParam += nationalityISO;
+            destParam += destinationISO;
+            const query = endpoint + '?' + prefix + '&' + passtype + '&' + nationalParam + '&' + residenceParam + '&' +
+                destParam + '&' + postfix;
+
+            return rp.get( query )
+                .then( html => {
+                    const stripBefore = `<img src="/logos/GF/GFB2C/in_on_no.gif">`;
+                    const stripAfter = `CHECK`;
+                    let result = $('.normal', html).html();
+                    result = result.split(stripBefore)[1];
+                    result = result.split(stripAfter)[0];
+                    result = '<pre>' + result.toString() + '</pre>';
+                    result = $(result).text();
+                    agent.add(new Text(result));
+                    return Promise.resolve( agent );
+                    })
+                .catch(function (err) {
+                    console.error(err);
+                    agent.add(new Text('Sorry, the backend of the service is temporary unavailable :( Will back to you soon.'));
+                });
+
         } else if (gotNationality && !gotDestination) {
             agent.context.set({ name: 'awaitingUserDestination', lifespan: 2});
             agent.add('Let me know which destination country you want to travel?');
@@ -180,7 +212,7 @@ function githook(request, response) {
     }
     function deploy(response){
         const selfDeployScript = process.env.DEPLOY_SCRIPT;
-        childProcess.exec(selfDeployScript, function(err, stdout, stderr){
+        childProcess.exec(selfDeployScript, function(err, stdout){
             if (err) {
                 console.error(err);
                 return response.send(500);
