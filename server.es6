@@ -18,6 +18,7 @@
 'use strict';
 const dotenv = require('dotenv');
 dotenv.config({path: `${__dirname}/.env`});
+process.env.DEBUG = ''
 const express = require('express');
 const rp = require('request-promise');
 const $ = require('cheerio');
@@ -218,7 +219,7 @@ function githook(request, response) {
                 console.log(stdout)
             }
         });
-        response.send(200);
+        response.sendStatus(200);
     }
 
     const githubUsername = process.env.GITHUBBER;
