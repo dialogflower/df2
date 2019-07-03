@@ -26,6 +26,7 @@ const childProcess = require('child_process');
 const {WebhookClient, Card, Payload, Text, Suggestion} = require('dialogflow-fulfillment');
 const server = express();
 const emptyPage = 'static/nothing.html';
+let currentDate = '[' + new Date().toUTCString() + '] ';
 
 process.env.DEBUG = 'dialogflow:debug';
 server.set('port', process.env.PORT || 1488);
@@ -33,8 +34,8 @@ server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json({type: 'application/json'}));
 
 function logging(req, res, next) {
-    let currentDate = '[' + new Date().toUTCString() + '] ';
-    console.log(currentDate + ' http://' + req.headers.host + req.url, ' - ', req.headers['user-agent'], ' - ', req.method);
+    currentDate = '[' + new Date().toUTCString() + '] ';
+    console.log(currentDate + 'http://' + req.headers.host + req.url, ' - ', req.headers['user-agent'], ' - ', req.method);
     if (process.env.LOG_LEVEL > 2) {
         console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
         console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
@@ -227,7 +228,7 @@ function githook(request, response) {
 
     if(branch.indexOf('master') > -1 && sender.login === githubUsername){
         deploy(response);
-        let currentDate = '[' + new Date().toUTCString() + '] ';
+        currentDate = '[' + new Date().toUTCString() + '] ';
         console.log(currentDate + 'Deploy initiated!\n')
     }
 }
@@ -241,5 +242,5 @@ server.post('/webhook', webhook);
 server.post('/githook', githook);
 
 server.listen(server.get('port'), function () {
-    console.log('Express server started on port', server.get('port'));
+    console.log(currentDate + 'Express server started on port', server.get('port'));
 });
