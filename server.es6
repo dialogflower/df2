@@ -242,5 +242,6 @@ server.post('/githook', githook);
 
 server.listen(server.get('port'), function () {
     console.log(currentDate + 'Express server started on port', server.get('port'));
-    console.log(currentDate + 'Verbosity level is' + process.env.LOG_LEVEL.toString());
+    console.log(currentDate + 'Verbosity level is', process.env.LOG_LEVEL.toString());
+    console.log(currentDate + 'Debug flag is', process.env.DEBUG);
 });
