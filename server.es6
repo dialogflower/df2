@@ -13,6 +13,7 @@
     - https://github.com/dialogflower/df2.git
     - CAADBAADXAADUYzPAYxyzyEYDeBVAg
     - https://www.tutorialsteacher.com/nodejs/nodejs-module-exports
+    - https://stackoverflow.com/questions/3922994/share-variables-between-files-in-node-js
  */
 
 
@@ -217,7 +218,7 @@ function webhook(request, response) {
 
 function githook(request, response) {
     if (process.env.LOG_LEVEL > 2) {
-        console.log('GitHub request headers:\n' + JSON.stringify(req.headers) + '\n');
+        console.log('GitHub request headers:\n' + JSON.stringify(request.headers) + '\n');
     }
     function deploy(response){
         const selfDeployScript = process.env.DEPLOY_SCRIPT;
