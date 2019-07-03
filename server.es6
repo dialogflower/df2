@@ -12,30 +12,33 @@
     - https://stackoverflow.com/questions/48583023/ - Reference Error: request is not defined
     - https://github.com/dialogflower/df2.git
     - CAADBAADXAADUYzPAYxyzyEYDeBVAg
+    - https://www.tutorialsteacher.com/nodejs/nodejs-module-exports
  */
 
 
 'use strict';
 const dotenv = require('dotenv');
 dotenv.config({path: `${__dirname}/.env`});
-process.env.DEBUG = ''
+process.env.DEBUG = '';
 const express = require('express');
 const rp = require('request-promise');
-const $ = require('cheerio');
 const bodyParser = require('body-parser');
 const childProcess = require('child_process');
-const {WebhookClient, Card, Payload, Text, Suggestion} = require('dialogflow-fulfillment');
+const {WebhookClient, Payload, Text} = require('dialogflow-fulfillment');
 const server = express();
 const emptyPage = 'static/nothing.html';
-let currentDate = '[' + new Date().toUTCString() + '] ';
+
 
 server.set('port', process.env.PORT || 1488);
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json({type: 'application/json'}));
 
+function currentDate() {
+    return '[' + new Date().toUTCString() + '] '
+}
+
 function logging(req, res, next) {
-    currentDate = '[' + new Date().toUTCString() + '] ';
-    console.log(currentDate + 'http://' + req.headers.host + req.url, ' - ', req.headers['user-agent'], ' - ', req.method);
+    console.log(currentDate() + 'http://' + req.headers.host + req.url, ' - ', req.headers['user-agent'], ' - ', req.method);
     if (process.env.LOG_LEVEL > 2) {
         console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
         console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
@@ -62,92 +65,100 @@ function webhook(request, response) {
     }
 
     function ruName(agent) {
-        const RuNamer = require('./utils/ru_namer');
+        const RuNamer = require('./utils/ru_namer.es6');
         const russianName = RuNamer.getNew();
         agent.add(new Text(russianName));
-        console.log(russianName)
+        console.log(currentDate() + russianName)
     }
 
     function americanName(agent) {
-        const AmericanNamer = require('./utils/amer_namer');
+        const AmericanNamer = require('./utils/amer_namer.es6');
         const americanName = AmericanNamer.getNew();
         agent.add(new Text(americanName));
-        console.log(americanName)
+        console.log(currentDate() + americanName)
     }
 
     function britishName(agent) {
-        const BritishNamer = require('./utils/gb_namer');
+        const BritishNamer = require('./utils/gb_namer.es6');
         const britishName = BritishNamer.getNew();
         agent.add(new Text(britishName));
-        console.log(britishName)
+        console.log(currentDate() + britishName)
     }
 
     function deName(agent) {
-        const DeNamer = require('./utils/de_namer');
+        const DeNamer = require('./utils/de_namer.es6');
         const germanName = DeNamer.getNew();
         agent.add(new Text(germanName));
-        console.log(germanName)
+        console.log(currentDate() + germanName)
     }
 
     function esName(agent) {
-        const EsNamer = require('./utils/es_namer');
+        const EsNamer = require('./utils/es_namer.es6');
         const hispanicName = EsNamer.getNew();
         agent.add(new Text(hispanicName));
-        console.log(hispanicName)
+        console.log(currentDate() + hispanicName)
     }
 
     function imeiHandler(agent) {
-        const IMEI = require('./utils/imei');
+        const IMEI = require('./utils/imei.es6');
         const hardwareID = IMEI.getNew();
         const imei = hardwareID[0];
         const model = hardwareID[1];
         const link = 'https://imei.info/' + imei;
         agent.add(new Text(imei + '\n' + model + '\n' + link));
-        console.log(imei, model)
+        console.log(currentDate() + imei, model)
     }
 
     function timaticHandler(agent) {
         // todo: refactor this spaghetti
-        const endpoint = 'https://www.timaticweb.com/cgi-bin/tim_website_client.cgi';
-        const prefix = 'SpecData=1&VISA=';
-        const passtype = 'PASSTYPES=PASS';
-        let nationalParam = 'NA=';
-        let residenceParam = '';
-        let destParam = 'DE=';
-        const postfix = 'user=GF&subuser=GFB2C';
+        function getFirstContextParameters(contexts) {
+            const firstContextName = Object.keys(contexts)[0];
+            const context = contexts[firstContextName];
+            return context.parameters;
+        }
 
-        const contexts = agent.context.contexts;
-        const firstContextName = Object.keys(contexts)[0];
-        const context = contexts[firstContextName];
-        // Expected input for nationality or destination:
-        // {
-        //   name: 'Burkina Faso', 'alpha-2': 'BF', 'alpha-3': 'BFA', numeric: 854
-        // }
-        const nationality = context.parameters['nationality'];
-        const destination = context.parameters['destination'];
-        const nationalityISO = nationality['alpha-2'];
-        const destinationISO = destination['alpha-2'];
-
-        const gotNationality = nationalityISO.length > 0;
-        const gotDestination = destinationISO.length > 0;
-
-        if(gotNationality && gotDestination) {
-            nationalParam += nationalityISO;
-            destParam += destinationISO;
-            const query = endpoint + '?' + prefix + '&' + passtype + '&' + nationalParam + '&' + residenceParam + '&' +
+        function timaticURL(nationality, destination) {
+            // Expected input for nationality or destination:
+            // {
+            //   name: 'Burkina Faso', 'alpha-2': 'BF', 'alpha-3': 'BFA', numeric: 854
+            // }
+            const endpoint = 'https://www.timaticweb.com/cgi-bin/tim_website_client.cgi';
+            const prefix = 'SpecData=1&VISA=';
+            const passtype = 'PASSTYPES=PASS';
+            const nationalParam = 'NA=' + nationality['alpha-2'];
+            const residenceParam = '';
+            const destParam = 'DE=' + destination['alpha-2'];
+            const postfix = 'user=GF&subuser=GFB2C';
+            return endpoint + '?' + prefix + '&' + passtype + '&' + nationalParam + '&' + residenceParam + '&' +
                 destParam + '&' + postfix;
+        }
+
+        function responseClean(html) {
+            const $ = require('cheerio');
+            const stripBefore = `<img src="/logos/GF/GFB2C/in_on_no.gif">`;
+            const stripAfter = `CHECK`;
+            let result = $('.normal', html).html();
+            result = result.split(stripBefore)[1];
+            result = result.split(stripAfter)[0];
+            result = result.split('Additional Information')[0];
+            result = '<pre>' + result.toString() + '</pre>';
+            result = $(result).text();
+            return result;
+        }
+
+        const parameters = getFirstContextParameters(agent.context.contexts);
+        const nationality = parameters['nationality'];
+        const destination = parameters['destination'];
+
+        if(nationality && destination) {
+            const query = timaticURL(nationality, destination);
 
             return rp.get( query )
                 .then( html => {
-                    const stripBefore = `<img src="/logos/GF/GFB2C/in_on_no.gif">`;
-                    const stripAfter = `CHECK`;
-                    let result = $('.normal', html).html();
-                    result = result.split(stripBefore)[1];
-                    result = result.split(stripAfter)[0];
-                    result = result.split('Additional Information')[0];
-                    result = '<pre>' + result.toString() + '</pre>';
-                    result = $(result).text();
-                    agent.add(new Text(result));
+                    let timaticResponse = responseClean(html);
+                    agent.add(new Text(timaticResponse));
+                    timaticResponse = timaticResponse.split('\n')[0];
+                    console.log(currentDate() + timaticResponse);
                     return Promise.resolve( agent );
                     })
                 .catch(function (err) {
@@ -155,10 +166,10 @@ function webhook(request, response) {
                     agent.add(new Text('Sorry, the backend of the service is temporary unavailable :( Will back to you soon.'));
                 });
 
-        } else if (gotNationality && !gotDestination) {
+        } else if (nationality && !destination) {
             agent.context.set({ name: 'awaitingUserDestination', lifespan: 2});
             agent.add('Let me know which destination country you want to travel?');
-        } else if (gotDestination && !gotNationality) {
+        } else if (destination && !nationality) {
             agent.context.set({ name: 'awaitingUserNationality', lifespan: 2});
             agent.add('Let me know which country has issued your passport?');
         } else {
@@ -171,7 +182,7 @@ function webhook(request, response) {
         // todo: remove this dummy subroutine
         const dummySentence = `This message is from Dialogflow's Cloud Functions!`;
         agent.add(new Text(dummySentence));
-        console.log(dummySentence);
+        console.log(currentDate() + dummySentence);
     }
 
     function googleAssistantHandler(agent) {
@@ -179,7 +190,7 @@ function webhook(request, response) {
         let conv = agent.conv();
         const dummySentence ='Hello from the Actions on Google client library!';
         conv.ask(dummySentence);
-        console.log(dummySentence);
+        console.log(currentDate() + dummySentence);
         agent.end(conv);
     }
 
@@ -228,8 +239,7 @@ function githook(request, response) {
 
     if(branch.indexOf('master') > -1 && sender.login === githubUsername){
         deploy(response);
-        currentDate = '[' + new Date().toUTCString() + '] ';
-        console.log(currentDate + 'Deploy initiated!\n')
+        console.log(currentDate() + 'Deploy initiated!\n')
     }
 }
 
@@ -242,7 +252,7 @@ server.post('/webhook', webhook);
 server.post('/githook', githook);
 
 server.listen(server.get('port'), function () {
-    console.log(currentDate + 'Express server started on port', server.get('port'));
-    console.log(currentDate + 'Verbosity level is', process.env.LOG_LEVEL.toString());
-    console.log(currentDate + 'Debug flag is', process.env.DEBUG);
+    console.log(currentDate() + 'Express server started on port', server.get('port'));
+    console.log(currentDate() + 'Verbosity level is', process.env.LOG_LEVEL.toString());
+    console.log(currentDate() + 'Debug flag is', process.env.DEBUG);
 });
