@@ -33,7 +33,8 @@ server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json({type: 'application/json'}));
 
 function logging(req, res, next) {
-    console.log('http://' + req.headers.host + req.url, ' - ', req.headers['user-agent'], ' - ', req.method);
+    let currentDate = '[' + new Date().toUTCString() + '] ';
+    console.log(currentDate + ' http://' + req.headers.host + req.url, ' - ', req.headers['user-agent'], ' - ', req.method);
     if (process.env.LOG_LEVEL > 2) {
         console.log('Dialogflow Request headers: ' + JSON.stringify(req.headers));
         console.log('Dialogflow Request body: ' + JSON.stringify(req.body));
@@ -226,7 +227,8 @@ function githook(request, response) {
 
     if(branch.indexOf('master') > -1 && sender.login === githubUsername){
         deploy(response);
-        console.log('Deploy initiated!\n')
+        let currentDate = '[' + new Date().toUTCString() + '] ';
+        console.log(currentDate + 'Deploy initiated!\n')
     }
 }
 
