@@ -28,7 +28,6 @@ const server = express();
 const emptyPage = 'static/nothing.html';
 let currentDate = '[' + new Date().toUTCString() + '] ';
 
-process.env.DEBUG = 'dialogflow:debug';
 server.set('port', process.env.PORT || 1488);
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json({type: 'application/json'}));
@@ -243,4 +242,5 @@ server.post('/githook', githook);
 
 server.listen(server.get('port'), function () {
     console.log(currentDate + 'Express server started on port', server.get('port'));
+    console.log(currentDate + 'Verbosity level is' + process.env.LOG_LEVEL.toString());
 });
