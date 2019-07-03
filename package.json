@@ -2,10 +2,10 @@
   "name": "dialogflower",
   "version": "1.0.0",
   "description": "Middleware to serve fulfillment for Google Dialogflow.",
-  "main": "server.js",
+  "main": "server.es6",
   "scripts": {
     "test": "test.js",
-    "start": "node server.js"
+    "start": "node server.es6"
   },
   "dependencies": {
     "actions-on-google": "^2.8.0",
