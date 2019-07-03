@@ -123,7 +123,6 @@ function webhook(request, response) {
         // }
         const nationality = context.parameters['nationality'];
         const destination = context.parameters['destination'];
-        const destinationFull = destination.name;
         const nationalityISO = nationality['alpha-2'];
         const destinationISO = destination['alpha-2'];
 
@@ -146,19 +145,7 @@ function webhook(request, response) {
                     result = result.split('Additional Information')[0];
                     result = '<pre>' + result.toString() + '</pre>';
                     result = $(result).text();
-                    const antivisa1 = 'VISA NOT REQUIRED';
-                    const antivisa2 = 'Visa required, except';
-                    const visa = 'VISA REQUIRED';
-
-                    if (result.includes(antivisa1 || antivisa2)) {
-                        agent.add(new Text(antivisa + ' for you to visit ' + destinationFull));
-                        }
-                    else if (result.includes(visa)) {
-                        agent.add(new Text(visa + ' for you to visit ' + destinationFull));
-                    }
-                    else {
-                        agent.add(new Text(result));
-                    }
+                    agent.add(new Text(result));
                     return Promise.resolve( agent );
                     })
                 .catch(function (err) {
