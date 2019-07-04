@@ -100,6 +100,24 @@ function webhook(request, response) {
         console.log(currentDate() + hispanicName)
     }
 
+    function getBurnerNumber(agent) {
+        const onlinesimApiEndpoint = 'https://onlinesim.ru/api/';
+        const apiKey = process.env.ONLINESIM_KEY;
+        let method = 'getFreePhoneList';
+        let query = onlinesimApiEndpoint + method + '?apikey=' + apiKey;
+
+        return rp.get(query)
+            .then(response => {
+                // const number = JSON.parse(response)['numbers'][0]['number'];
+                const burnerNumber = JSON.parse(response)['numbers'][0]['full_number'];
+                agent.add(new Text(burnerNumber));
+                console.log(currentDate() + burnerNumber);
+            })
+            .catch(function (err) {
+                console.error(err);
+            });
+    }
+
     function imeiHandler(agent) {
         const IMEI = require('./utils/imei.es6');
         const hardwareID = IMEI.getNew();
@@ -209,7 +227,7 @@ function webhook(request, response) {
     intentMap.set('German name repeat', deName);
     intentMap.set('Hispanic name', esName);
     intentMap.set('Hispanic name repeat', esName);
-    intentMap.set('Burner phone number', imeiHandler);
+    intentMap.set('Burner phone number', getBurnerNumber);
     intentMap.set('imei', imeiHandler);
     intentMap.set('awaitingUserDestinationCountry', timaticHandler);
     intentMap.set('google', googleAssistantHandler);
