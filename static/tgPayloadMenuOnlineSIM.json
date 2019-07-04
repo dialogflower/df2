@@ -1,25 +1,8 @@
 {
-  "text": "",
-  "reply_markup": {
-    "inline_keyboard": [
-      [
-        {
-          "text": "Get last SMS",
-          "callback_data": "Get last SMS"
-        }
-      ],
-      [
-        {
-          "text": "Apply for another number",
-          "callback_data": "Get burner number"
-        }
-      ],
-      [
-        {
-          "text": "Exit to menu",
-          "callback_data": "menu"
-        }
-      ]
-    ]
-  }
+  "title": "",
+  "quickReplies": [
+    "Get last SMS",
+    "Apply for another number",
+    "Exit to menu"
+  ]
 }

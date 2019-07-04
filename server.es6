@@ -121,7 +121,7 @@ function webhook(request, response) {
                 if (agent.originalRequest.source === 'telegram') {
                     agent.requestSource = agent.TELEGRAM;
                     let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadMenuOnlineSIM.json');
-                    tgPayloadMenuOnlineSIM.text = burnerNumber;
+                    tgPayloadMenuOnlineSIM.title = burnerNumber;
                     agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));
                 }
                 else {
@@ -148,8 +148,17 @@ function webhook(request, response) {
                 response = JSON.parse(response);
                 response = response.messages.data[0];
                 console.log(response);
-                agent.add(new Text('```\nFrom: ' + response.in_number + '\nWhen: ' + response.created_at +
-                    '\nMessage: ' + response.text + '\n```'));
+                if (agent.originalRequest.source === 'telegram') {
+                    agent.requestSource = agent.TELEGRAM;
+                    let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadGetSMS.json');
+                    tgPayloadMenuOnlineSIM.text = response;
+                    agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));
+                }
+                else {
+                    agent.add(new Text('```\nFrom: ' + response.in_number + '\nWhen: ' +
+                        response.created_at + '\nMessage: ' + response.text + '\n```'));
+                }
+
                 return Promise.resolve(agent);
             })
             .catch(function (err) {
