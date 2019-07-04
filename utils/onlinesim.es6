@@ -62,7 +62,7 @@ function getFreePhoneList() {
 }
 
 function getFreeMessageList(number) {
-    const method = 'getFreeMessageList'
+    const method = 'getFreeMessageList';
     const query = onlinesimApiEndpoint + method + '?page=1&phone=' + number + '&lang=en';
     return rp.get(query)
         .then( response => {

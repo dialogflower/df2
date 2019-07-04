@@ -117,19 +117,41 @@ function webhook(request, response) {
                 const shortNumber = number['number'];
                 const maxDate = number['maxdate'];
                 const updatedAt = number['data_humans'];
+                const result = burnerNumber + '\n(online since ' + updatedAt + ')';
                 // console.log(number);
                 if (agent.originalRequest.source === 'telegram') {
                     agent.requestSource = agent.TELEGRAM;
-                    //let tgPayloadChooseColor = require ('./static/tgPayloadChooseColor.json');
-                    let tgPayloadChooseColor = {"text": burnerNumber + '\n(online since ' + updatedAt + ')',"reply_markup":{"inline_keyboard":[[{"text":"Red","callback_data":"Red"}],[{"text":"Green","callback_data":"Green"}],[{"text":"Yellow","callback_data":"Yellow"}],[{"text":"Blue","callback_data":"Blue"}],[{"text":"Pink","callback_data":"Pink"}]]}};
-                    // let tgPayloadChooseColor = {"text": burnerNumber};
-                    agent.add(new Payload( agent.TELEGRAM, tgPayloadChooseColor ));
-                    console.info(currentDate() + 'TG payload served')
+                    let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadMenuOnlineSIM.json');
+                    tgPayloadMenuOnlineSIM.text = burnerNumber;
+                    agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));
                 }
                 else {
-                    agent.add(new Text(burnerNumber + '\n(online since ' + updatedAt + ')'));
+                    agent.add(new Text(result));
                 }
-                agent.context.set({ name: 'BurnerNumber', lifespan: 2, parameters: { number: shortNumber, maxdate: maxDate }});
+                console.info(currentDate() + burnerNumber);
+                agent.context.set({ name: 'BurnerNumber', lifespan: 2, parameters: { number: burnerNumber, maxdate: maxDate }});
+                return Promise.resolve(agent);
+            })
+            .catch(function (err) {
+                console.error(err);
+            });
+    }
+
+    function getLastSMS(agent) {
+        const onlinesimApiEndpoint = 'https://onlinesim.ru/api/';
+        // console.log();
+        // const number = agent.context.parameters.number;
+        const number = agent.context.contexts.generic.parameters.number;
+        const method = 'getFreeMessageList';
+        const query = onlinesimApiEndpoint + method + '?page=1&phone=' + number + '&lang=en';
+        console.info(currentDate() + query);
+        return rp.get(query)
+            .then( response => {
+                response = JSON.parse(response);
+                response = response.messages.data[0];
+                console.log(response);
+                agent.add(new Text('```\nFrom: ' + response.in_number + '\nWhen:' + response.created_at +
+                    '\nMessage:\n' + response.text + '\n```'));
                 return Promise.resolve(agent);
             })
             .catch(function (err) {
@@ -247,6 +269,7 @@ function webhook(request, response) {
     intentMap.set('Hispanic name', esName);
     intentMap.set('Hispanic name repeat', esName);
     intentMap.set('Burner phone number', getBurnerNumber);
+    intentMap.set('Get last SMS', getLastSMS);
     intentMap.set('imei', imeiHandler);
     intentMap.set('awaitingUserDestinationCountry', timaticHandler);
     intentMap.set('google', googleAssistantHandler);
