@@ -150,8 +150,8 @@ function webhook(request, response) {
                 response = JSON.parse(response);
                 response = response.messages.data[0];
                 console.log(response);
-                agent.add(new Text('```\nFrom: ' + response.in_number + '\nWhen:' + response.created_at +
-                    '\nMessage:\n' + response.text + '\n```'));
+                agent.add(new Text('```\nFrom: ' + response.in_number + '\nWhen: ' + response.created_at +
+                    '\nMessage: ' + response.text + '\n```'));
                 return Promise.resolve(agent);
             })
             .catch(function (err) {
