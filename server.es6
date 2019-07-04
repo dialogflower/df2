@@ -56,6 +56,7 @@ function webhook(request, response) {
     const agent = new WebhookClient({request, response});
     agent.requestSource = agent.ACTIONS_ON_GOOGLE;
 
+
     function welcome(agent) {
         agent.add(`Welcome to my agent!`);
     }
@@ -118,8 +119,10 @@ function webhook(request, response) {
                 const updatedAt = number['data_humans'];
                 // console.log(number);
                 if (agent.originalRequest.source === 'telegram') {
+                    agent.requestSource = agent.TELEGRAM;
                     //let tgPayloadChooseColor = require ('./static/tgPayloadChooseColor.json');
                     let tgPayloadChooseColor = {"text": burnerNumber + '\n(online since ' + updatedAt + ')',"reply_markup":{"inline_keyboard":[[{"text":"Red","callback_data":"Red"}],[{"text":"Green","callback_data":"Green"}],[{"text":"Yellow","callback_data":"Yellow"}],[{"text":"Blue","callback_data":"Blue"}],[{"text":"Pink","callback_data":"Pink"}]]}};
+                    // let tgPayloadChooseColor = {"text": burnerNumber};
                     agent.add(new Payload( agent.TELEGRAM, tgPayloadChooseColor ));
                     console.info(currentDate() + 'TG payload served')
                 }
