@@ -116,14 +116,17 @@ function webhook(request, response) {
                 const shortNumber = number['number'];
                 const maxDate = number['maxdate'];
                 const updatedAt = number['data_humans'];
-                agent.add(new Text(burnerNumber + '\n(online since ' + updatedAt + ')'));
-                agent.context.set({ name: 'BurnerNumber', lifespan: 2, parameters: { number: shortNumber, maxdate: maxDate }});
                 // console.log(number);
                 if (agent.originalRequest.source === 'telegram') {
-                    const tgPayloadChooseColor = require ('./static/tgPayloadChooseColor');
-                    agent.add(new Payload( 'telegram', tgPayloadChooseColor ));
+                    let tgPayloadChooseColor = require ('./static/tgPayloadChooseColor.json');
+
+                    agent.add(new Payload( agent.TELEGRAM, tgPayloadChooseColor ));
                     console.info(currentDate() + 'TG payload served')
                 }
+                else {
+                    agent.add(new Text(burnerNumber + '\n(online since ' + updatedAt + ')'));
+                }
+                agent.context.set({ name: 'BurnerNumber', lifespan: 2, parameters: { number: shortNumber, maxdate: maxDate }});
                 return Promise.resolve(agent);
             })
             .catch(function (err) {
