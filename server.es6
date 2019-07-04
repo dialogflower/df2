@@ -14,6 +14,7 @@
     - CAADBAADXAADUYzPAYxyzyEYDeBVAg
     - https://www.tutorialsteacher.com/nodejs/nodejs-module-exports
     - https://stackoverflow.com/questions/3922994/share-variables-between-files-in-node-js
+    - https://dialogflow.com/docs/reference/message-objects
  */
 
 
@@ -25,7 +26,7 @@ const express = require('express');
 const rp = require('request-promise');
 const bodyParser = require('body-parser');
 const childProcess = require('child_process');
-const {WebhookClient, Payload, Text} = require('dialogflow-fulfillment');
+const {WebhookClient, Payload, Suggestion, Text} = require('dialogflow-fulfillment');
 const server = express();
 const emptyPage = 'static/nothing.html';
 
@@ -150,10 +151,18 @@ function webhook(request, response) {
                 response = response.messages.data[0];
                 console.log(response);
                 if (agent.originalRequest.source === 'telegram') {
-                    agent.requestSource = agent.TELEGRAM;
+                    /*agent.requestSource = agent.TELEGRAM;
                     let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadGetSMS.json');
                     tgPayloadMenuOnlineSIM.text = response;
-                    agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));
+                    agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));*/
+                    agent.add(new Card({
+                            title: 'From: ' + response.in_number + ' (' + response.created_at + ')',
+                            text: `Message: response.text`
+                        })
+                    );
+                    agent.add(new Suggestion('Get last SMS'));
+                    agent.add(new Suggestion('Apply for another number'));
+                    agent.add(new Suggestion('Exit to menu'))
                 }
                 else {
                     agent.add(new Text('```\nFrom: ' + response.in_number + '\nWhen: ' +
