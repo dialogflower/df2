@@ -108,10 +108,10 @@ function webhook(request, response) {
 
         return rp.get(query)
             .then(response => {
-                // const number = JSON.parse(response)['numbers'][0]['number'];
                 const burnerNumber = JSON.parse(response)['numbers'][0]['full_number'];
                 agent.add(new Text(burnerNumber));
                 console.log(currentDate() + burnerNumber);
+                return Promise.resolve(agent);
             })
             .catch(function (err) {
                 console.error(err);
@@ -178,7 +178,7 @@ function webhook(request, response) {
                     agent.add(new Text(timaticResponse));
                     timaticResponse = timaticResponse.split('\n')[0];
                     console.log(currentDate() + timaticResponse);
-                    return Promise.resolve( agent );
+                    return Promise.resolve(agent);
                     })
                 .catch(function (err) {
                     console.error(err);
