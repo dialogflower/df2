@@ -140,8 +140,8 @@ function webhook(request, response) {
     function getLastSMS(agent) {
         const onlinesimApiEndpoint = 'https://onlinesim.ru/api/';
         // console.log();
-        // const number = agent.context.parameters.number;
-        const number = agent.context.contexts.generic.parameters.number;
+        const number = agent.context.parameters.number;
+        // const number = agent.context.contexts.generic.parameters.number;
         const method = 'getFreeMessageList';
         const query = onlinesimApiEndpoint + method + '?page=1&phone=' + number + '&lang=en';
         console.info(currentDate() + query);
