@@ -122,6 +122,7 @@ function webhook(request, response) {
                     agent.requestSource = agent.TELEGRAM;
                     let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadMenuOnlineSIM.json');
                     tgPayloadMenuOnlineSIM.title = burnerNumber;
+                    tgPayloadMenuOnlineSIM.text = burnerNumber;
                     agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));
                 }
                 else {

@@ -1,8 +1,12 @@
 {
-  "title": "",
-  "quickReplies": [
-    "Get last SMS",
-    "Apply for another number",
-    "Exit to menu"
-  ]
+  "text": "",
+  "quickReplies": {
+    "title": "",
+    "quickReplies": [
+      "Get last SMS",
+      "Apply for another number",
+      "Exit to menu"
+    ]
+  }
+
 }
