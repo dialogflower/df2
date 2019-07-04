@@ -105,6 +105,7 @@ function webhook(request, response) {
         const apiKey = process.env.ONLINESIM_KEY;
         let method = 'getFreePhoneList';
         let query = onlinesimApiEndpoint + method + '?apikey=' + apiKey;
+        console.info(currentDate() + query);
 
         return rp.get(query)
             .then(response => {
