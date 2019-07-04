@@ -61,6 +61,7 @@ function webhook(request, response) {
     }
 
     function fallback(agent) {
+        //TODO: add contexts
         agent.add(`I didn't understand`);
         agent.add(`I'm sorry, can you try again?`);
     }
@@ -104,14 +105,25 @@ function webhook(request, response) {
         const onlinesimApiEndpoint = 'https://onlinesim.ru/api/';
         const apiKey = process.env.ONLINESIM_KEY;
         let method = 'getFreePhoneList';
-        let query = onlinesimApiEndpoint + method + '?apikey=' + apiKey;
+        let query = onlinesimApiEndpoint + method + '?lang=en&apikey=' + apiKey;
         console.info(currentDate() + query);
 
         return rp.get(query)
             .then(response => {
-                const burnerNumber = JSON.parse(response)['numbers'][0]['full_number'];
-                agent.add(new Text(burnerNumber));
-                console.log(currentDate() + burnerNumber);
+                const numbers = JSON.parse(response)['numbers'];
+                const number = numbers[Math.floor(Math.random()*numbers.length)];
+                const burnerNumber = number['full_number'];
+                const shortNumber = number['number'];
+                const maxDate = number['maxdate'];
+                const updatedAt = number['data_humans'];
+                agent.add(new Text(burnerNumber + '\n(online since ' + updatedAt + ')'));
+                agent.context.set({ name: 'BurnerNumber', lifespan: 2, parameters: { number: shortNumber, maxdate: maxDate }});
+                // console.log(number);
+                if (agent.originalRequest.source === 'telegram') {
+                    const tgPayloadChooseColor = require ('./static/tgPayloadChooseColor');
+                    agent.add(new Payload( 'telegram', tgPayloadChooseColor ));
+                    console.info(currentDate() + 'TG payload served')
+                }
                 return Promise.resolve(agent);
             })
             .catch(function (err) {
