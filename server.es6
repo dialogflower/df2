@@ -114,11 +114,10 @@ function webhook(request, response) {
                 const numbers = JSON.parse(response)['numbers'];
                 const number = numbers[Math.floor(Math.random()*numbers.length)];
                 const burnerNumber = number['full_number'];
-                const shortNumber = number['number'];
+                const smallNumber = number['number'];
                 const maxDate = number['maxdate'];
                 const updatedAt = number['data_humans'];
                 const result = burnerNumber + '\n(online since ' + updatedAt + ')';
-                // console.log(number);
                 if (agent.originalRequest.source === 'telegram') {
                     agent.requestSource = agent.TELEGRAM;
                     let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadMenuOnlineSIM.json');
@@ -129,7 +128,7 @@ function webhook(request, response) {
                     agent.add(new Text(result));
                 }
                 console.info(currentDate() + burnerNumber);
-                agent.context.set({ name: 'BurnerNumber', lifespan: 2, parameters: { number: burnerNumber, maxdate: maxDate }});
+                agent.context.set({ name: 'BurnerNumber', lifespan: 2, parameters: { number: smallNumber, maxdate: maxDate }});
                 return Promise.resolve(agent);
             })
             .catch(function (err) {
@@ -139,9 +138,8 @@ function webhook(request, response) {
 
     function getLastSMS(agent) {
         const onlinesimApiEndpoint = 'https://onlinesim.ru/api/';
-        // console.log();
-        const number = agent.context.parameters.number;
-        // const number = agent.context.contexts.generic.parameters.number;
+        const context = agent.context.contexts.burnernumber['parameters'];
+        const number = context.number;
         const method = 'getFreeMessageList';
         const query = onlinesimApiEndpoint + method + '?page=1&phone=' + number + '&lang=en';
         console.info(currentDate() + query);
