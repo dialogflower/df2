@@ -152,7 +152,7 @@ function webhook(request, response) {
                 console.log(response);
                 if (agent.originalRequest.source === 'telegram') {
                     /*agent.requestSource = agent.TELEGRAM;
-                    let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadGetSMS.json');
+                    let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadMenuOnlineSIM.json'');
                     tgPayloadMenuOnlineSIM.text = response;
                     agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));*/
                     agent.add(new Card({
