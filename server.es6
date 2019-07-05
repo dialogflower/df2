@@ -120,10 +120,7 @@ function webhook(request, response) {
                 const updatedAt = number['data_humans'];
                 const result = burnerNumber + '\n(online since ' + updatedAt + ')';
                 if (agent.originalRequest.source === 'telegram') {
-                    agent.requestSource = agent.TELEGRAM;
-                    let tgPayloadGetSMS = require ('./static/tgPayloadGetSMS.json');
-                    tgPayloadGetSMS.text = '```\n' + burnerNumber + '\n```';
-                    agent.add(new Payload( agent.TELEGRAM, tgPayloadGetSMS ));
+                    agent.add(new Text(result));
                     agent.add(new Suggestion('Get last SMS'));
                     agent.add(new Suggestion('Apply for another number'));
                 }
