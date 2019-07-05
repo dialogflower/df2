@@ -155,9 +155,10 @@ function webhook(request, response) {
                     let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadMenuOnlineSIM.json'');
                     tgPayloadMenuOnlineSIM.text = response;
                     agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));*/
+                    agent.requestSource = agent.TELEGRAM;
                     agent.add(new Card({
-                            title: 'From: ' + response.in_number + ' (' + response.created_at + ')',
-                            text: `Message: response.text`
+                            title: 'From: ' + response.in_number ,
+                            text: 'When: ' + response.created_at + '\nMessage: ' +response.text
                         })
                     );
                     agent.add(new Suggestion('Get last SMS'));
