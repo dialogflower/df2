@@ -26,7 +26,7 @@ const express = require('express');
 const rp = require('request-promise');
 const bodyParser = require('body-parser');
 const childProcess = require('child_process');
-const {WebhookClient, Payload, Card, Suggestion, Text} = require('dialogflow-fulfillment');
+const {WebhookClient, Card, Suggestion, Text} = require('dialogflow-fulfillment');
 const server = express();
 const emptyPage = 'static/nothing.html';
 
@@ -119,9 +119,15 @@ function webhook(request, response) {
                 const maxDate = number['maxdate'];
                 const updatedAt = number['data_humans'];
                 const result = burnerNumber + '\n(online since ' + updatedAt + ')';
-                agent.add(new Text(result));
-                agent.add(new Suggestion('Get last SMS'));
-                agent.add(new Suggestion('Apply for another number'));
+                if (agent.originalRequest.source === 'telegram') {
+                    agent.requestSource = agent.TELEGRAM;
+                    agent.add(new Text(result));
+                    agent.add(new Suggestion('Get last SMS'));
+                    agent.add(new Suggestion('Apply for another number'));
+                }
+                else {
+                    agent.add(new Text(result));
+                }
                 console.info(currentDate() + burnerNumber);
                 agent.context.set({ name: 'BurnerNumber', lifespan: 2, parameters: { number: smallNumber, full_number: burnerNumber, maxdate: maxDate }});
                 return Promise.resolve(agent);
