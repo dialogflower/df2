@@ -158,12 +158,13 @@ function webhook(request, response) {
                     agent.requestSource = agent.TELEGRAM;
                     agent.add(new Card({
                             title: 'From: ' + response.in_number ,
-                            text: 'When: ' + response.created_at + '\nMessage: ' +response.text
+                            text: 'When: ' + response.created_at + '\nMessage: ' +response.text,
+                            buttonText: 'Get last SMS'
                         })
                     );
-                    agent.add(new Suggestion('Get last SMS'));
+                    /*agent.add(new Suggestion('Get last SMS'));
                     agent.add(new Suggestion('Apply for another number'));
-                    agent.add(new Suggestion('Exit to menu'))
+                    agent.add(new Suggestion('Exit to menu'))*/
                 }
                 else {
                     agent.add(new Text('```\nFrom: ' + response.in_number + '\nWhen: ' +
