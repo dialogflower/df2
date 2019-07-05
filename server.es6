@@ -85,7 +85,15 @@ function webhook(request, response) {
     function britishName(agent) {
         const BritishNamer = require('./utils/gb_namer.es6');
         const britishName = BritishNamer.getNew();
-        agent.add(new Text(britishName));
+        if (agent.originalRequest.source === 'telegram') {
+            agent.requestSource = agent.TELEGRAM;
+            agent.add(new Text(britishName));
+            agent.add(new Suggestion('One more British name'));
+            agent.add(new Suggestion('Exit to menu'));
+        }
+        else {
+            agent.add(new Text(britishName));
+        }
         console.log(currentDate() + britishName)
     }
 
@@ -118,7 +126,7 @@ function webhook(request, response) {
                 const smallNumber = number['number'];
                 const maxDate = number['maxdate'];
                 const updatedAt = number['data_humans'];
-                const result = burnerNumber + '\n(online since ' + updatedAt + ')';
+                const result = burnerNumber + '\n(online since ' + updatedAt + ')\nYou can use this number within next 15 minutes and there are two attempts to fetch the last SMS. ';
                 if (agent.originalRequest.source === 'telegram') {
                     agent.requestSource = agent.TELEGRAM;
                     agent.add(new Text(result));
@@ -157,6 +165,7 @@ function webhook(request, response) {
                             text: 'From: ' + response.in_number + ' (' +  response.data_humans+ ')\nTo: ' + fullNumber
                         })
                     );
+                    //todo: according to lifespanCount value, repeat Get last SMS two times
                     agent.add(new Suggestion('Apply for another number'));
                     agent.add(new Suggestion('Exit to menu'))
                 }
