@@ -119,16 +119,11 @@ function webhook(request, response) {
                 const maxDate = number['maxdate'];
                 const updatedAt = number['data_humans'];
                 const result = burnerNumber + '\n(online since ' + updatedAt + ')';
-                if (agent.originalRequest.source === 'telegram') {
-                    agent.add(new Text(result));
-                    agent.add(new Suggestion('Get last SMS'));
-                    agent.add(new Suggestion('Apply for another number'));
-                }
-                else {
-                    agent.add(new Text(result));
-                }
+                agent.add(new Text(result));
+                agent.add(new Suggestion('Get last SMS'));
+                agent.add(new Suggestion('Apply for another number'));
                 console.info(currentDate() + burnerNumber);
-                agent.context.set({ name: 'BurnerNumber', lifespan: 2, parameters: { number: smallNumber, maxdate: maxDate }});
+                agent.context.set({ name: 'BurnerNumber', lifespan: 2, parameters: { number: smallNumber, full_number: burnerNumber, maxdate: maxDate }});
                 return Promise.resolve(agent);
             })
             .catch(function (err) {
@@ -140,6 +135,7 @@ function webhook(request, response) {
         const onlinesimApiEndpoint = 'https://onlinesim.ru/api/';
         const context = agent.context.contexts.burnernumber['parameters'];
         const number = context.number;
+        const fullNumber = context.full_number;
         const method = 'getFreeMessageList';
         const query = onlinesimApiEndpoint + method + '?page=1&phone=' + number + '&lang=en';
         console.info(currentDate() + query);
@@ -149,14 +145,10 @@ function webhook(request, response) {
                 response = response.messages.data[0];
                 console.log(response);
                 if (agent.originalRequest.source === 'telegram') {
-                    /*agent.requestSource = agent.TELEGRAM;
-                    let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadMenuOnlineSIM.json'');
-                    tgPayloadMenuOnlineSIM.text = response;
-                    agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));*/
                     agent.requestSource = agent.TELEGRAM;
                     agent.add(new Card({
                             title: response.text,
-                            text: 'From: ' + response.in_number + ' (' +  response.data_humans+ ')\nTo: ' + response.my_number
+                            text: 'From: ' + response.in_number + ' (' +  response.data_humans+ ')\nTo: ' + fullNumber
                         })
                     );
                     agent.add(new Suggestion('Apply for another number'));
