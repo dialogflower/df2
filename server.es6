@@ -122,9 +122,11 @@ function webhook(request, response) {
                 if (agent.originalRequest.source === 'telegram') {
                     agent.requestSource = agent.TELEGRAM;
                     let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadMenuOnlineSIM.json');
-                    tgPayloadMenuOnlineSIM.title = burnerNumber;
-                    tgPayloadMenuOnlineSIM.text = burnerNumber;
+                    tgPayloadMenuOnlineSIM.text = '`' + burnerNumber + '`';
                     agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));
+                    agent.add(new Suggestion('Get last SMS'));
+                    agent.add(new Suggestion('Apply for another number'));
+                    agent.add(new Suggestion('Exit to menu'))
                 }
                 else {
                     agent.add(new Text(result));
@@ -161,8 +163,8 @@ function webhook(request, response) {
                             text: 'From: ' + response.in_number + ' (' +  response.data_humans+ ')\nTo: ' + response.my_number
                         })
                     );
-                    /*agent.add(new Suggestion('Get last SMS'));
-                    agent.add(new Suggestion('Apply for another number'));*/
+                    agent.add(new Suggestion('Get last SMS'));
+                    agent.add(new Suggestion('Apply for another number'));
                     agent.add(new Suggestion('Exit to menu'))
                 }
                 else {

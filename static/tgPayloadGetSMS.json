@@ -1,14 +1,4 @@
 {
   "text": "",
-  "parse_mode": "Markdown",
-  "reply_markup": {
-    "inline_keyboard": [
-      [
-        {
-          "text": "Get last SMS",
-          "callback_data": "Get last SMS"
-        }
-      ]
-    ]
-  }
+  "parse_mode": "Markdown"
 }
