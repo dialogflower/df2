@@ -71,15 +71,29 @@ function webhook(request, response) {
     function ruName(agent) {
         const RuNamer = require('./utils/ru_namer.es6');
         const russianName = RuNamer.getNew();
-        agent.add(new Text(russianName));
-        console.log(currentDate() + russianName)
+        if (agent.originalRequest.source === 'telegram') {
+            agent.requestSource = agent.TELEGRAM;
+            agent.add(new Text(russianName));
+            agent.add(new Suggestion('One more Russian name'));
+            agent.add(new Suggestion('Exit to menu'));
+        }
+        else {
+            agent.add(new Text(russianName));
+        }
     }
 
     function americanName(agent) {
         const AmericanNamer = require('./utils/amer_namer.es6');
         const americanName = AmericanNamer.getNew();
-        agent.add(new Text(americanName));
-        console.log(currentDate() + americanName)
+        if (agent.originalRequest.source === 'telegram') {
+            agent.requestSource = agent.TELEGRAM;
+            agent.add(new Text(americanName));
+            agent.add(new Suggestion('One more American name'));
+            agent.add(new Suggestion('Exit to menu'));
+        }
+        else {
+            agent.add(new Text(americanName));
+        }
     }
 
     function britishName(agent) {
@@ -100,15 +114,29 @@ function webhook(request, response) {
     function deName(agent) {
         const DeNamer = require('./utils/de_namer.es6');
         const germanName = DeNamer.getNew();
-        agent.add(new Text(germanName));
-        console.log(currentDate() + germanName)
+        if (agent.originalRequest.source === 'telegram') {
+            agent.requestSource = agent.TELEGRAM;
+            agent.add(new Text(germanName));
+            agent.add(new Suggestion('One more German name'));
+            agent.add(new Suggestion('Exit to menu'));
+        }
+        else {
+            agent.add(new Text(germanName));
+        }
     }
 
     function esName(agent) {
         const EsNamer = require('./utils/es_namer.es6');
         const hispanicName = EsNamer.getNew();
-        agent.add(new Text(hispanicName));
-        console.log(currentDate() + hispanicName)
+        if (agent.originalRequest.source === 'telegram') {
+            agent.requestSource = agent.TELEGRAM;
+            agent.add(new Text(hispanicName));
+            agent.add(new Suggestion('One more Hispanic name'));
+            agent.add(new Suggestion('Exit to menu'));
+        }
+        else {
+            agent.add(new Text(hispanicName));
+        }
     }
 
     function getBurnerNumber(agent) {
@@ -239,7 +267,15 @@ function webhook(request, response) {
             return rp.get( query )
                 .then( html => {
                     let timaticResponse = responseClean(html);
-                    agent.add(new Text(timaticResponse));
+                    if (agent.originalRequest.source === 'telegram') {
+                        agent.requestSource = agent.TELEGRAM;
+                        agent.add(new Text(timaticResponse));
+                        agent.add(new Suggestion('One more Visa Information'));
+                        agent.add(new Suggestion('Exit to menu'));
+                    }
+                    else {
+                        agent.add(new Text(timaticResponse))
+                    }
                     timaticResponse = timaticResponse.split('\n')[0];
                     console.log(currentDate() + timaticResponse);
                     return Promise.resolve(agent);
