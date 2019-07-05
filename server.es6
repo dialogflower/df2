@@ -121,12 +121,11 @@ function webhook(request, response) {
                 const result = burnerNumber + '\n(online since ' + updatedAt + ')';
                 if (agent.originalRequest.source === 'telegram') {
                     agent.requestSource = agent.TELEGRAM;
-                    let tgPayloadMenuOnlineSIM = require ('./static/tgPayloadMenuOnlineSIM.json');
-                    tgPayloadMenuOnlineSIM.text = '`' + burnerNumber + '`';
-                    agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));
+                    let tgPayloadGetSMS = require ('./static/tgPayloadGetSMS.json');
+                    tgPayloadGetSMS.text = '```\n' + burnerNumber + '\n```';
+                    agent.add(new Payload( agent.TELEGRAM, tgPayloadGetSMS ));
                     agent.add(new Suggestion('Get last SMS'));
                     agent.add(new Suggestion('Apply for another number'));
-                    agent.add(new Suggestion('Exit to menu'))
                 }
                 else {
                     agent.add(new Text(result));
@@ -163,7 +162,6 @@ function webhook(request, response) {
                             text: 'From: ' + response.in_number + ' (' +  response.data_humans+ ')\nTo: ' + response.my_number
                         })
                     );
-                    agent.add(new Suggestion('Get last SMS'));
                     agent.add(new Suggestion('Apply for another number'));
                     agent.add(new Suggestion('Exit to menu'))
                 }
