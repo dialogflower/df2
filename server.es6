@@ -26,7 +26,7 @@ const express = require('express');
 const rp = require('request-promise');
 const bodyParser = require('body-parser');
 const childProcess = require('child_process');
-const {WebhookClient, Payload, Suggestion, Text} = require('dialogflow-fulfillment');
+const {WebhookClient, Payload, Card, Suggestion, Text} = require('dialogflow-fulfillment');
 const server = express();
 const emptyPage = 'static/nothing.html';
 
