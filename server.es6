@@ -157,9 +157,15 @@ function webhook(request, response) {
                     agent.add(new Payload( agent.TELEGRAM, tgPayloadMenuOnlineSIM ));*/
                     agent.requestSource = agent.TELEGRAM;
                     agent.add(new Card({
-                            title: 'From: ' + response.in_number ,
-                            text: 'When: ' + response.created_at + '\nMessage: ' +response.text,
-                            buttonText: 'Get last SMS'
+                            title: 'Message: ' +response.text,
+                            text: 'Sender: ' + response.in_number + ' (' + response.created_at +
+                                ', ' + response.data_humans+ ')\n'
+                        })
+                    );
+                    agent.add(new Card({
+                            title: response.text,
+                            text: 'From: ' + response.in_number + ' (' + response.created_at
+                                + ', ' + response.data_humans+ ')\nTo: ' + response.my_number
                         })
                     );
                     /*agent.add(new Suggestion('Get last SMS'));
