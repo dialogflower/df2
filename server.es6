@@ -15,6 +15,9 @@
     - https://www.tutorialsteacher.com/nodejs/nodejs-module-exports
     - https://stackoverflow.com/questions/3922994/share-variables-between-files-in-node-js
     - https://dialogflow.com/docs/reference/message-objects
+    - https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=40.712784,-74.005941&radius=50000&type=airport&key=<Your API Key>
+    - https://stackoverflow.com/questions/39413560
+
  */
 
 
@@ -76,8 +79,7 @@ function webhook(request, response) {
             agent.add(new Text(russianName));
             agent.add(new Suggestion('One more Russian name'));
             agent.add(new Suggestion('Exit to menu'));
-        }
-        else {
+        } else {
             agent.add(new Text(russianName));
         }
     }
@@ -90,8 +92,7 @@ function webhook(request, response) {
             agent.add(new Text(americanName));
             agent.add(new Suggestion('One more American name'));
             agent.add(new Suggestion('Exit to menu'));
-        }
-        else {
+        } else {
             agent.add(new Text(americanName));
         }
     }
@@ -104,8 +105,7 @@ function webhook(request, response) {
             agent.add(new Text(britishName));
             agent.add(new Suggestion('One more British name'));
             agent.add(new Suggestion('Exit to menu'));
-        }
-        else {
+        } else {
             agent.add(new Text(britishName));
         }
         console.log(currentDate() + britishName)
@@ -119,8 +119,7 @@ function webhook(request, response) {
             agent.add(new Text(germanName));
             agent.add(new Suggestion('One more German name'));
             agent.add(new Suggestion('Exit to menu'));
-        }
-        else {
+        } else {
             agent.add(new Text(germanName));
         }
     }
@@ -133,8 +132,7 @@ function webhook(request, response) {
             agent.add(new Text(hispanicName));
             agent.add(new Suggestion('One more Hispanic name'));
             agent.add(new Suggestion('Exit to menu'));
-        }
-        else {
+        } else {
             agent.add(new Text(hispanicName));
         }
     }
@@ -149,7 +147,7 @@ function webhook(request, response) {
         return rp.get(query)
             .then(response => {
                 const numbers = JSON.parse(response)['numbers'];
-                const number = numbers[Math.floor(Math.random()*numbers.length)];
+                const number = numbers[Math.floor(Math.random() * numbers.length)];
                 const burnerNumber = number['full_number'];
                 const smallNumber = number['number'];
                 const maxDate = number['maxdate'];
@@ -160,12 +158,15 @@ function webhook(request, response) {
                     agent.add(new Text(result));
                     agent.add(new Suggestion('Get last SMS'));
                     agent.add(new Suggestion('Apply for another number'));
-                }
-                else {
+                } else {
                     agent.add(new Text(result));
                 }
                 console.info(currentDate() + burnerNumber);
-                agent.context.set({ name: 'BurnerNumber', lifespan: 2, parameters: { number: smallNumber, full_number: burnerNumber, maxdate: maxDate }});
+                agent.context.set({
+                    name: 'BurnerNumber',
+                    lifespan: 2,
+                    parameters: {number: smallNumber, full_number: burnerNumber, maxdate: maxDate}
+                });
                 return Promise.resolve(agent);
             })
             .catch(function (err) {
@@ -182,7 +183,7 @@ function webhook(request, response) {
         const query = onlinesimApiEndpoint + method + '?page=1&phone=' + number + '&lang=en';
         console.info(currentDate() + query);
         return rp.get(query)
-            .then( response => {
+            .then(response => {
                 response = JSON.parse(response);
                 response = response.messages.data[0];
                 console.log(response);
@@ -190,14 +191,13 @@ function webhook(request, response) {
                     agent.requestSource = agent.TELEGRAM;
                     agent.add(new Card({
                             title: response.text,
-                            text: 'From: ' + response.in_number + ' (' +  response.data_humans+ ')\nTo: ' + fullNumber
+                            text: 'From: ' + response.in_number + ' (' + response.data_humans + ')\nTo: ' + fullNumber
                         })
                     );
                     //todo: according to lifespanCount value, repeat Get last SMS two times
                     agent.add(new Suggestion('Apply for another number'));
                     agent.add(new Suggestion('Exit to menu'))
-                }
-                else {
+                } else {
                     agent.add(new Text('```\nFrom: ' + response.in_number + '\nWhen: ' +
                         response.created_at + '\nMessage: ' + response.text + '\n```'));
                     agent.add(new Suggestion('Exit to menu'))
@@ -261,53 +261,59 @@ function webhook(request, response) {
         const nationality = parameters['nationality'];
         const destination = parameters['destination'];
 
-        if(nationality && destination) {
+        if (nationality && destination) {
             const query = timaticURL(nationality, destination);
 
-            return rp.get( query )
-                .then( html => {
+            return rp.get(query)
+                .then(html => {
                     let timaticResponse = responseClean(html);
                     if (agent.originalRequest.source === 'telegram') {
                         agent.requestSource = agent.TELEGRAM;
                         agent.add(new Text(timaticResponse));
                         agent.add(new Suggestion('One more Visa Information'));
                         agent.add(new Suggestion('Exit to menu'));
-                    }
-                    else {
+                    } else {
                         agent.add(new Text(timaticResponse))
                     }
                     timaticResponse = timaticResponse.split('\n')[0];
                     console.log(currentDate() + timaticResponse);
                     return Promise.resolve(agent);
-                    })
+                })
                 .catch(function (err) {
                     console.error(err);
                     agent.add(new Text('Sorry, the backend of the service is temporary unavailable :( Will back to you soon.'));
                 });
 
         } else if (nationality && !destination) {
-            agent.context.set({ name: 'awaitingUserDestination', lifespan: 2});
+            agent.context.set({name: 'awaitingUserDestination', lifespan: 2});
             agent.add('Let me know which destination country you want to travel?');
         } else if (destination && !nationality) {
-            agent.context.set({ name: 'awaitingUserNationality', lifespan: 2});
+            agent.context.set({name: 'awaitingUserNationality', lifespan: 2});
             agent.add('Let me know which country has issued your passport?');
         } else {
-            agent.context.set({ name: 'awaitingUserNationality', lifespan: 2});
+            agent.context.set({name: 'awaitingUserNationality', lifespan: 2});
             agent.add('Let me know which what is your country?');
         }
     }
 
-    function myHandler(agent) {
+    function telegramExperimentHandler(agent) {
         // todo: remove this dummy subroutine
-        const dummySentence = `This message is from Dialogflow's Cloud Functions!`;
-        agent.add(new Text(dummySentence));
-        console.log(currentDate() + dummySentence);
+        if (agent.originalRequest.source === 'telegram') {
+            agent.requestSource = agent.TELEGRAM;
+            let dummySentence = {"text":"","reply_markup":{"inline_keyboard":[[{"text":"Go to menu","callback_data":"menu"}]]}};
+            dummySentence.text = `This message is from Dialogflow's Cloud Functions!`;
+            agent.add(new Payload( agent.TELEGRAM, dummySentence ));
+        }
+        else {
+            agent.add(new Text(`This message is from Dialogflow's Cloud Functions!`))
+        }
+        console.log(`This message is from Dialogflow's Cloud Functions!`)
     }
 
     function googleAssistantHandler(agent) {
         // todo: remove this dummy subroutine
         let conv = agent.conv();
-        const dummySentence ='Hello from the Actions on Google client library!';
+        const dummySentence = 'Hello from the Actions on Google client library!';
         conv.ask(dummySentence);
         console.log(currentDate() + dummySentence);
         agent.end(conv);
@@ -316,7 +322,7 @@ function webhook(request, response) {
     let intentMap = new Map();
     intentMap.set('Default Welcome Intent', welcome);
     intentMap.set('Default Fallback Intent', fallback);
-    intentMap.set('helloWorld', myHandler);
+    intentMap.set('helloWorld', telegramExperimentHandler);
     intentMap.set('American name', americanName);
     intentMap.set('American name repeat', americanName);
     intentMap.set('British name', britishName);
@@ -339,14 +345,14 @@ function githook(request, response) {
     if (process.env.LOG_LEVEL > 2) {
         console.log('GitHub request headers:\n' + JSON.stringify(request.headers) + '\n');
     }
-    function deploy(response){
+
+    function deploy(response) {
         const selfDeployScript = process.env.DEPLOY_SCRIPT;
-        childProcess.exec(selfDeployScript, function(err, stdout){
+        childProcess.exec(selfDeployScript, function (err, stdout) {
             if (err) {
                 console.error(err);
                 return response.send(500);
-            }
-            else {
+            } else {
                 console.log(stdout)
             }
         });
@@ -357,7 +363,7 @@ function githook(request, response) {
     const sender = request.body.sender;
     const branch = request.body.ref;
 
-    if(branch.indexOf('master') > -1 && sender.login === githubUsername){
+    if (branch.indexOf('master') > -1 && sender.login === githubUsername) {
         deploy(response);
         console.log(currentDate() + 'Deploy initiated!\n')
     }
