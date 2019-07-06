@@ -155,9 +155,6 @@ function webhook(request, response) {
                 const result = burnerNumber + '\n(online since ' + updatedAt + ')\nYou can use this number within next 15 minutes and there are two attempts to fetch the last SMS. ';
                 if (agent.originalRequest.source === 'telegram') {
                     agent.requestSource = agent.TELEGRAM;
-                    agent.add(new Text(result));
-                    agent.add(new Suggestion('Get last SMS'));
-                    agent.add(new Suggestion('Apply for another number'));
                     let tgPayloadGetSMS = require ('./static/tgPayloadGetSMS.json');
                     tgPayloadGetSMS.text = result;
                     agent.add(new Payload( agent.TELEGRAM, tgPayloadGetSMS ));
@@ -197,7 +194,6 @@ function webhook(request, response) {
                             text: 'From: ' + response.in_number + ' (' + response.data_humans + ')\nTo: ' + fullNumber
                         })
                     );
-                    //todo: according to lifespanCount value, repeat Get last SMS two times
                     agent.add(new Suggestion('Apply for another number'));
                     agent.add(new Suggestion('Exit to menu'))
                 } else {
