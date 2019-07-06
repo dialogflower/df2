@@ -152,7 +152,7 @@ function webhook(request, response) {
                 const smallNumber = number['number'];
                 const maxDate = number['maxdate'];
                 const updatedAt = number['data_humans'];
-                const result = burnerNumber + '\n(online since ' + updatedAt + ')\nYou can use this number within next 15 minutes and there are two attempts to fetch the last SMS. ';
+                const result = burnerNumber + '\n(online since ' + updatedAt + ')\nYou can use this number within next 15 minutes and there are two attempts to fetch the last SMS.';
                 if (agent.originalRequest.source === 'telegram') {
                     agent.requestSource = agent.TELEGRAM;
                     let tgPayloadGetSMS = require ('./static/tgPayloadGetSMS.json');
@@ -299,8 +299,20 @@ function webhook(request, response) {
         // todo: remove this dummy subroutine
         if (agent.originalRequest.source === 'telegram') {
             agent.requestSource = agent.TELEGRAM;
-            let dummySentence = {"text":"","parse_mode": "Markdown","reply_markup":{"inline_keyboard":[[{"text":"Go to menu","callback_data":"menu"}]]}};
-            dummySentence.text = `This message is from **Dialogflow's** [Cloud Functions](https://console.dialogflow.com/)!`;
+            let dummySentence = {"sticker": {
+                    "width": 512,
+                    "height": 512,
+                    "emoji": "👌",
+                    "set_name": "Itstimetogo",
+                    "thumb": {
+                        "file_id": "AAQEABN5NKIwAATQKJryFElt9-IuAAIC",
+                        "file_size": 5082,
+                        "width": 128,
+                        "height": 128
+                    },
+                    "file_id": "CAADBAADXAADUYzPAYxyzyEYDeBVAg",
+                    "file_size": 21542
+                }};
             agent.add(new Payload( agent.TELEGRAM, dummySentence ));
         }
         else {
@@ -323,15 +335,10 @@ function webhook(request, response) {
     intentMap.set('Default Fallback Intent', fallback);
     intentMap.set('helloWorld', telegramExperimentHandler);
     intentMap.set('American name', americanName);
-    intentMap.set('American name repeat', americanName);
     intentMap.set('British name', britishName);
-    intentMap.set('British name repeat', britishName);
     intentMap.set('Russian name', ruName);
-    intentMap.set('Russian name repeat', ruName);
     intentMap.set('German name', deName);
-    intentMap.set('German name repeat', deName);
     intentMap.set('Hispanic name', esName);
-    intentMap.set('Hispanic name repeat', esName);
     intentMap.set('Burner phone number', getBurnerNumber);
     intentMap.set('Get last SMS', getLastSMS);
     intentMap.set('imei', imeiHandler);
