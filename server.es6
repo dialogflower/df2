@@ -158,6 +158,9 @@ function webhook(request, response) {
                     agent.add(new Text(result));
                     agent.add(new Suggestion('Get last SMS'));
                     agent.add(new Suggestion('Apply for another number'));
+                    let tgPayloadGetSMS = require ('./static/tgPayloadGetSMS.json');
+                    tgPayloadGetSMS.text = result;
+                    agent.add(new Payload( agent.TELEGRAM, tgPayloadGetSMS ));
                 } else {
                     agent.add(new Text(result));
                 }
@@ -189,17 +192,14 @@ function webhook(request, response) {
                 console.log(response);
                 if (agent.originalRequest.source === 'telegram') {
                     agent.requestSource = agent.TELEGRAM;
-                    let tgPayloadGetSMS = require ('./static/tgPayloadGetSMS.json');
-                    tgPayloadGetSMS.text = 'From: ' + response.in_number + ' (' + response.data_humans + ')\nTo: ' + fullNumber;
-                    agent.add(new Payload( agent.TELEGRAM, tgPayloadGetSMS ));
-                    /*agent.add(new Card({
+                    agent.add(new Card({
                             title: response.text,
                             text: 'From: ' + response.in_number + ' (' + response.data_humans + ')\nTo: ' + fullNumber
                         })
                     );
                     //todo: according to lifespanCount value, repeat Get last SMS two times
                     agent.add(new Suggestion('Apply for another number'));
-                    agent.add(new Suggestion('Exit to menu'))*/
+                    agent.add(new Suggestion('Exit to menu'))
                 } else {
                     agent.add(new Text('```\nFrom: ' + response.in_number + '\nWhen: ' +
                         response.created_at + '\nMessage: ' + response.text + '\n```'));
