@@ -303,6 +303,8 @@ function webhook(request, response) {
             let dummySentence = {"text":"","reply_markup":{"inline_keyboard":[[{"text":"Go to menu","callback_data":"menu"}]]}};
             dummySentence.text = `This message is from Dialogflow's Cloud Functions!`;
             agent.add(new Payload( agent.TELEGRAM, dummySentence ));
+            agent.add(new Suggestion('Get last SMS'));
+            agent.add(new Suggestion('Apply for another number'));
         }
         else {
             agent.add(new Text(`This message is from Dialogflow's Cloud Functions!`))
