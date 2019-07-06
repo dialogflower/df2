@@ -6,7 +6,7 @@
       [
         {
           "text": "Get last SMS",
-          "callback_data": "menu"
+          "callback_data": "Get last SMS"
         }
       ]
     ]
