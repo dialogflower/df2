@@ -10,5 +10,19 @@
         }
       ]
     ]
+  },
+  "sticker": {
+    "width": 512,
+    "height": 512,
+    "emoji": "👌",
+    "set_name": "Itstimetogo",
+    "thumb": {
+      "file_id": "AAQEABN5NKIwAATQKJryFElt9-IuAAIC",
+      "file_size": 5082,
+      "width": 128,
+      "height": 128
+    },
+    "file_id": "CAADBAADXAADUYzPAYxyzyEYDeBVAg",
+    "file_size": 21542
   }
 }
